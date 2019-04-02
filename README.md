@@ -42,6 +42,10 @@ The following items should be completed for this project to be considered "compl
     - [ ] Status
       - [ ] Level
       - [ ] Alive / Dead
+- [ ] Data Storage
+  - [ ] Persistent
+    - [ ] Local Storage
+    - [ ] Database ? (I consider this a stretch goal for now)
 - [ ] Infrastructure
   - [ ] Unit Tests
   - [ ] Deployed to Server
