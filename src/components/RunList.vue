@@ -7,6 +7,9 @@
 </template>
 
 <script>
+import request from '../services/api/index.js'
+console.log(request)
+
 export default {
   name: 'RunList',
   props: {},
@@ -15,8 +18,14 @@ export default {
       runs: []
     }
   },
-  mounted: function () {
+  mounted: async function () {
     //pretend we dynamically retrieve data
+    try{
+      let response = await request('/runs/test', 'get')
+      console.log(response)
+    } catch (e) {
+      console.error(e)
+    }
     setTimeout(() => {
       this.runs = [
         { id: 0, title: 'Test Run' },
