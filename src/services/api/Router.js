@@ -31,7 +31,12 @@ Router.prototype.route = function (path, handlers){
         }/?$`
       ),
       params: path.split('/').filter(part=>part[0] === ':').map(part => part.substr(1)),
-      handlers
+      handlers: {
+        get: handlers.get,
+        put: handlers.put,
+        post: handlers.post,
+        delete: handlers.delete
+      }
     }
   )
 }
