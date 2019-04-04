@@ -15,6 +15,7 @@ Router.prototype.request = async function (path, method, body){
       )
     }
   }
+  throw new Error(`Path ${path} did not match any routes.`)
 }
 
 Router.prototype.route = function (path, handlers){
