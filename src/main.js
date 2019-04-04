@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 
-//import 'bulma/css/bulma.min.css'
+import 'bulma/css/bulma.min.css'
 import './assets/fontawesome.css'
 import '@fortawesome/fontawesome-free/css/fontawesome.css'
 

@@ -1,38 +1,51 @@
 <template>
   <div class="run-list">
+    <div class="run-list-header">
+      <button 
+        class="button is-primary"
+        v-on:click="createRun"
+      >
+        <i class="fas fa-plus"></i>Create Run
+      </button>
+    </div>
+    <div class="run-list-content"></div>
     <div class="run" v-for="run in runs" :key="run.id">
       <h2>{{run.title}}</h2>
     </div>
+    <CreateRunModal v-if="createRunActive" v-bind:onClose="closeCreateRunModal" />
   </div>
 </template>
 
 <script>
 import request from '../services/api/index.js'
-console.log(request)
+import CreateRunModal from './modals/CreateRunModal.vue'
 
 export default {
   name: 'RunList',
+  components: {
+    CreateRunModal
+  },
   props: {},
   data: function (){
     return {
-      runs: []
+      runs: [],
+      createRunActive: false
     }
   },
   mounted: async function () {
-    //pretend we dynamically retrieve data
     try{
-      let response = await request('/runs/test', 'get')
-      console.log(response)
+      this.runs = await request('/runs', 'get')
     } catch (e) {
       console.error(e)
     }
-    setTimeout(() => {
-      this.runs = [
-        { id: 0, title: 'Test Run' },
-        { id: 1, title: 'Test Run' },
-        { id: 2, title: 'Test Run' }
-      ]
-    }, 1000)
+  },
+  methods: {
+    createRun: function (event) {
+      this.createRunActive = true
+    },
+    closeCreateRunModal: function (event){
+      this.createRunActive = false
+    }
   }
 }
 </script>
@@ -42,6 +55,14 @@ export default {
 .run-list {
   width: 400px;
   padding-top: 100px;
+}
+.run-list-header {
+  display: flex;
+  justify-content: flex-start;
+  margin: 10px 0;
+}
+.run-list-header button i {
+  margin-right: 10px;
 }
 .run {
   display: flex;
