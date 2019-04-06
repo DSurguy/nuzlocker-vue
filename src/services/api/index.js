@@ -1,4 +1,5 @@
 import Router from './Router.js'
+import {create, retrieve} from './localStorageDriver.js'
 
 function delayedResolve(value){
   return new Promise((resolve, reject) => {
@@ -9,12 +10,18 @@ function delayedResolve(value){
 const myRouter = new Router()
 myRouter.route('/runs', {
   get: async function (params){
-    return delayedResolve([
-      { id: 0, title: 'testo'}
-    ]) 
+    return delayedResolve(
+      retrieve([
+        { key: 'run', value: null}
+      ])
+    ) 
   },
   post: async function (params, body){
-    return true
+    return delayedResolve(
+      create([
+        { key: 'run', value: null }
+      ], body)
+    ) 
   }
 })
 

@@ -10,15 +10,21 @@
     </div>
     <div class="run-list-content"></div>
     <div class="run" v-for="run in runs" :key="run.id">
-      <h2>{{run.title}}</h2>
+      <h2>{{run.name}}</h2>
+      <p>Game: {{translateGame(run.game)}}</p>
     </div>
-    <CreateRunModal v-if="createRunActive" v-bind:onClose="closeCreateRunModal" />
+    <CreateRunModal 
+      v-if="createRunActive" 
+      v-bind:onClose="onCreateRunModalClose"
+      v-bind:onComplete="onCreateRunModalComplete"
+    />
   </div>
 </template>
 
 <script>
 import request from '../services/api/index.js'
 import CreateRunModal from './modals/CreateRunModal.vue'
+import {translateGame} from '../utils/pokemon.js'
 
 export default {
   name: 'RunList',
@@ -40,10 +46,15 @@ export default {
     }
   },
   methods: {
-    createRun: function (event) {
+    translateGame,
+    createRun: function () {
       this.createRunActive = true
     },
-    closeCreateRunModal: function (event){
+    onCreateRunModalComplete: async function (){
+      this.createRunActive = false
+      this.runs = await request('/runs', 'get')
+    },
+    onCreateRunModalClose: function (){
       this.createRunActive = false
     }
   }
@@ -65,14 +76,13 @@ export default {
   margin-right: 10px;
 }
 .run {
-  display: flex;
   box-sizing: border-box;
-  height: 64px;
+  height: 72px;
   width: 100%;
   border: 1px solid var(--var-color-grey-lighter);
   border-radius: 4px;
   margin: 10px 0;
-  padding: 10px 20px;
+  padding: 5px 20px;
 }
 .run h2 {
   font-size: 20px;

@@ -41,6 +41,14 @@
               <li v-for="field in warningFields" v-bind:key="field">- {{field}}</li>
             </ul>
           </div>
+          <div class="notification is-danger" v-if="hasError">
+            <p>There was an error while creating your run:</p>
+            <p>
+              <i>
+                {{errorMessage}}
+              </i>
+            </p>
+          </div>
         </form>
       </section>
       <footer class="modal-card-foot">
@@ -57,7 +65,8 @@ import request from '../../services/api/index.js'
 export default {
   name: 'CreateRunModal',
   props: {
-    onClose: Function
+    onClose: Function,
+    onComplete: Function
   },
   data: function (){
     return {
@@ -66,7 +75,9 @@ export default {
         game: "red"
       },
       hasWarning: false,
-      warningFields: []
+      warningFields: [],
+      hasError: false,
+      errorMessage: ''
     }
   },
   mounted: async function () {
@@ -82,7 +93,19 @@ export default {
         this.warningFields = ['Name']
       }
       else{
-
+        this.hasWarning = false
+        this.warningFields = []
+        //submit a new run!
+        try{
+          await request('/runs', 'post', {
+            name: this.form.name,
+            game: this.form.game
+          })
+          this.onComplete()
+        } catch (e){
+          this.hasError = true
+          this.errorMessage = e.message
+        }
       }
     }
   }
