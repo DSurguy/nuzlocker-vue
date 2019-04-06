@@ -1,0 +1,6 @@
+.modal-card-head {
+  justify-content: space-between;
+}
+.modal-card-title {
+  flex-grow: 0;
+}
