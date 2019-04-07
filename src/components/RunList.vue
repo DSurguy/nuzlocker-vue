@@ -1,17 +1,30 @@
 <template>
   <div class="run-list">
     <div class="run-list-header">
+      <div class="notification is-danger" v-if="error">
+        <p>There was an error while retrieving runs:</p>
+        <p>
+          <i>
+            <span test-label="requestError">{{error}}</span>
+          </i>
+        </p>
+      </div>
       <button 
+        test-label="createNewRunButton"
         class="button is-primary"
         v-on:click="createRun"
       >
         <i class="fas fa-plus"></i>Create Run
       </button>
     </div>
-    <div class="run-list-content"></div>
-    <div class="run" v-for="run in runs" :key="run.id">
-      <h2>{{run.name}}</h2>
-      <p>Game: {{translateGame(run.game)}}</p>
+    <div 
+      class="run" 
+      v-for="run in runs" 
+      :key="run.id"
+      test-label="run"
+    >
+      <h2><span test-label="runName">{{run.name}}</span></h2>
+      <p>Game: <span test-label="runGame">{{translateGame(run.game)}}</span></p>
     </div>
     <CreateRunModal 
       v-if="createRunActive" 
@@ -22,7 +35,7 @@
 </template>
 
 <script>
-import request from '../services/api/index.js'
+import { request } from '../services/api/index.js'
 import CreateRunModal from './modals/CreateRunModal.vue'
 import {translateGame} from '../utils/pokemon.js'
 
@@ -35,14 +48,15 @@ export default {
   data: function (){
     return {
       runs: [],
-      createRunActive: false
+      createRunActive: false,
+      error: null
     }
   },
   mounted: async function () {
     try{
       this.runs = await request('/runs', 'get')
     } catch (e) {
-      console.error(e)
+      this.error = e.message;
     }
   },
   methods: {
