@@ -37,6 +37,6 @@ myRouter.route('/runs/:runId', {
   }
 })
 
-export default async function request(path, method, body){
+export async function request(path, method, body){
   return await myRouter.request(path, method, body)
 }

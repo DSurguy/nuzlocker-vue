@@ -4,7 +4,6 @@
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">Start New Run</p>
-        <button class="delete" aria-label="close"></button>
       </header>
       <section class="modal-card-body">
         <form>
@@ -17,7 +16,8 @@
                 placeholder="Pick a name for your run!" 
                 v-model="form.name"
                 ref="runName"
-                v-on:keyup="onNameChange"
+                v-on:input="onNameChange"
+                test-label="formName"
               >
             </div>
           </div>
@@ -28,6 +28,7 @@
                 <select 
                   v-model="form.game"
                   ref="runGame"
+                  test-label="formGame"
                 >
                   <option value="red">Pokémon Red</option>
                   <option value="blue">Pokémon Blue</option>
@@ -35,13 +36,13 @@
               </div>
             </div>
           </div>
-          <div class="notification is-warning" v-if="hasWarning">
+          <div class="notification is-warning" v-if="hasWarning" test-label="warning">
             <p>Please fill out the following fields, they're required!</p>
             <ul>
-              <li v-for="field in warningFields" v-bind:key="field">- {{field}}</li>
+              <li v-for="field in warningFields" v-bind:key="field" test-label="warningField">- {{field}}</li>
             </ul>
           </div>
-          <div class="notification is-danger" v-if="hasError">
+          <div class="notification is-danger" v-if="hasError" test-label="error">
             <p>There was an error while creating your run:</p>
             <p>
               <i>
@@ -52,15 +53,27 @@
         </form>
       </section>
       <footer class="modal-card-foot">
-        <button class="button is-success" v-on:click="onSubmit">Save changes</button>
-        <button class="button" v-on:click="onClose">Cancel</button>
+        <button 
+          class="button is-success" 
+          v-on:click="onSubmit"
+          test-label="buttonSubmit"
+        >
+          Save changes
+        </button>
+        <button 
+          class="button" 
+          v-on:click="onClose"
+          test-label="buttonClose"
+        >
+          Cancel
+        </button>
       </footer>
     </div>
   </div>
 </template>
 
 <script>
-import request from '../../services/api/index.js'
+import {request} from '../../services/api/index.js'
 
 export default {
   name: 'CreateRunModal',
