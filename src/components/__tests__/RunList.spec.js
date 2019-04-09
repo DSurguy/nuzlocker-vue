@@ -143,7 +143,6 @@ describe('RunList', () => {
 
   describe('Data Retrieval', function () {
     it('Make a request for runs', async (done) => {
-      console.log('Run Test')
       configureRequests([
         {
           path: '/runs', 
