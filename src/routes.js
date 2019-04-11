@@ -4,13 +4,15 @@
  */
 import App from './App.vue'
 import RunList from './components/RunList.vue'
+import RunViewer from './components/RunViewer.vue'
 
 const routes = [
   { 
     path: '/', 
     component: App,
     children: [
-      { path: '', component: RunList }
+      { path: '', component: RunList },
+      { path: 'run/:id', component: RunViewer }
     ]
   }
 ]
