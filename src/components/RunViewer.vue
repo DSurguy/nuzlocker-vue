@@ -11,7 +11,7 @@
       </p>
       <p>{{error}}</p>
     </div>
-    <div class="runMeta" v-if="loaded">
+    <div class="runMeta" v-if="!error && !notFound">
       <div class="meta-name"><span test-label="runName">{{run.name}}</span></div>
       <div class="meta-game" test-label="runGame"></div>
       <div class="meta-status" test-label="runStatus"></div>
@@ -43,12 +43,11 @@ export default {
   },
   mounted: async function () {
     try{
-      this.run = await request(`/run/${this.$route.params.runId}`, 'get')
+      this.run = await request(`/runs/${this.$route.params.runId}`, 'get')
       this.loaded = true
     }
     catch (e) {
-      this.loaded = false
-      this.run = null
+      this.loaded = true
       if( e.code === 404 ){
         this.error = null
         this.notFound = true

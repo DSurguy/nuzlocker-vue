@@ -1,3 +1,5 @@
+//TODO: Unit Tests
+//TODO: 404
 export function create (keys, data){
   const path = buildPathPartsFromKeys(keys).join('/')
   //get the current list data
@@ -23,9 +25,10 @@ export function remove (keys, data){}
 export function retrieve (keys){
   const pathParts = buildPathPartsFromKeys(keys)
   let returnValue
+  let path
   if( pathParts.length !== keys.length*2 ){
     //we're getting a list of items, and we assume the last key had a value of null
-    const path = pathParts.join('/')
+    path = pathParts.join('/')
     returnValue = getList(path).children
   }
   else{
@@ -62,7 +65,9 @@ function getList(path){
 }
 
 function buildPathPartsFromKeys(keys){
-  return keys.map((key) => {
-    return `${encodeURIComponent(key.key)}${key.value ? `/${key.value}` : ''}`
-  })
+  return keys.reduce((parts, key) => {
+    parts.push(encodeURIComponent(key.key))
+    if( key.value !== undefined ) parts.push(`${key.value}`)
+    return parts
+  }, [])
 }

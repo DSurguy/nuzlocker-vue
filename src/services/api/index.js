@@ -27,7 +27,11 @@ myRouter.route('/runs', {
 
 myRouter.route('/runs/:runId', {
   get: async function (params){
-    return true
+    return delayedResolve(
+      retrieve([
+        { key: 'run', value: '1'}
+      ])
+    )
   },
   put: async function (params, body){
     return true

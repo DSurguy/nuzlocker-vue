@@ -20,7 +20,7 @@ describe('RunViewer', () => {
     it('Display a 404 when the run is not found', async function (done) {
       configureRequests([
         {
-          path: '/run/potato',
+          path: '/runs/potato',
           method: 'get',
           response: {
             throw: true,
@@ -35,7 +35,7 @@ describe('RunViewer', () => {
       const wrapper = shallowMount(RunViewer, {
         mocks: {
           $route: {
-            path: '/run/potato',
+            path: '/runs/potato',
             params: {
               runId: 'potato'
             }
@@ -57,7 +57,7 @@ describe('RunViewer', () => {
     it('Display the error when request fails', async function (done) {
       configureRequests([
         {
-          path: '/run/1',
+          path: '/runs/1',
           method: 'get',
           response: {
             throw: true,
@@ -69,7 +69,7 @@ describe('RunViewer', () => {
       const wrapper = shallowMount(RunViewer, {
         mocks: {
           $route: {
-            path: '/run/1',
+            path: '/runs/1',
             params: {
               runId: '1'
             }
@@ -91,7 +91,7 @@ describe('RunViewer', () => {
     it('Show the run name after mount', async function (done) {
       configureRequests([
         {
-          path: '/run/1',
+          path: '/runs/1',
           method: 'get',
           response: {
             data: {
@@ -109,7 +109,7 @@ describe('RunViewer', () => {
       const wrapper = shallowMount(RunViewer, {
         mocks: {
           $route: {
-            path: '/run/1',
+            path: '/runs/1',
             params: {
               runId: '1'
             }
