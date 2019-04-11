@@ -1,13 +1,14 @@
 <template>
   <div id="app">
     <div class="container">
-      <RunList />
+      <router-view></router-view>
     </div>
   </div>
 </template>
 
 <script>
 import RunList from './components/RunList.vue'
+
 
 export default {
   name: 'app',
