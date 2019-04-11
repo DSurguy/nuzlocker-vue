@@ -12,7 +12,7 @@ const routes = [
     component: App,
     children: [
       { path: '', component: RunList },
-      { path: 'run/:id', component: RunViewer }
+      { path: 'run/:runId', component: RunViewer }
     ]
   }
 ]

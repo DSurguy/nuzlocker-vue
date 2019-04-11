@@ -67,6 +67,9 @@ describe('routing', () => {
         .find(RunViewer)
         .exists()
       ).toBe(true)
+      expect(
+        wrapper.vm.$route.params.runId
+      ).toBe('1')
       done()
     })
   })
