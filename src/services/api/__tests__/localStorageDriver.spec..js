@@ -21,6 +21,20 @@ describe('localStorageDriver', () => {
       ).toBe(JSON.stringify({data: 'test', id: 0}))
     })
 
+    it('Create a new item with multiple keys', () => {
+      localStorageDriver.create([
+        {key: 'runs', value: 1},
+        {key: 'events', value: 12},
+        {key: 'subEvents', value: null}
+      ], {
+        data: 'test'
+      })
+      expect(
+        window.localStorage
+        .getStore()['runs/1/events/12/subEvents/0']
+      ).toBe(JSON.stringify({data: 'test', id: 0}))
+    })
+
     it('Create a new item with an incremented ID if some exist', () => {
       Object.assign(
         window.localStorage.getStore(),
