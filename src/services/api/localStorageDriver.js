@@ -2,8 +2,6 @@ const isDefined = (val) => {
   return val !== undefined && val !== null
 }
 
-//TODO: 404
-
 /**
  * 
  * @param {Array<Object>} keys - parent keys of the item that should be inserted, signature [{ key: String, [value]: String }]
