@@ -126,4 +126,90 @@ describe('localStorageDriver', () => {
       }).toThrow()
     })
   })
+
+  describe('retrieve', () => {
+    it('should get back a single item', () => {
+      Object.assign(
+        window.localStorage.getStore(),
+        {
+          'runs': JSON.stringify({nextId: 1, childKeys: [0]}),
+          'runs/0': JSON.stringify({data: 'test', id: 0})
+        }
+      )
+      expect(
+        localStorageDriver.retrieve([
+          {key: 'runs', value: 0}
+        ])
+      ).toEqual({data: 'test', id: 0})
+    })
+
+    it('should get back a nested single item', () => {
+      Object.assign(
+        window.localStorage.getStore(),
+        {
+          'runs': JSON.stringify({nextId: 1, childKeys: [0]}),
+          'runs/0': JSON.stringify({data: 'test', id: 0}),
+          'runs/0/events': JSON.stringify({nextId: 3, childKeys: [2]}),
+          'runs/0/events/2': JSON.stringify({data: 'testEvent', id: 2})
+        }
+      )
+      expect(
+        localStorageDriver.retrieve([
+          {key: 'runs', value: 0},
+          {key: 'events', value: 2}
+        ])
+      ).toEqual({data: 'testEvent', id: 2})
+    })
+
+    it('should get back a list with all children', () => {
+      Object.assign(
+        window.localStorage.getStore(),
+        {
+          'runs': JSON.stringify({nextId: 4, childKeys: [0,1,3]}),
+          'runs/0': JSON.stringify({data: 'test', id: 0}),
+          'runs/1': JSON.stringify({data: 'test2', id: 1}),
+          'runs/3': JSON.stringify({data: 'test3', id: 3})
+        }
+      )
+      expect(
+        localStorageDriver.retrieve([
+          {key: 'runs', value: null}
+        ])
+      ).toEqual([
+        {data: 'test', id: 0},
+        {data: 'test2', id: 1},
+        {data: 'test3', id: 3}
+      ])
+    })
+
+    it('should throw an error with a code of 404 when item does not exist', () => {
+      Object.assign(
+        window.localStorage.getStore(),
+        {
+          'runs': JSON.stringify({nextId: 4, childKeys: [0,1,3]}),
+          'runs/0': JSON.stringify({data: 'test', id: 0})
+        }
+      )
+      let returnedError
+      try{
+        localStorageDriver.retrieve([
+          {key: 'runs', value: 42}
+        ])
+      } catch (e) {
+        returnedError = e
+      }
+      expect(
+        returnedError
+      ).toHaveProperty('code', 404)
+    })
+
+    it('should return an empty list when key is not found', () => {
+      expect(
+        localStorageDriver.retrieve([
+          {key: 'runs', value: 42},
+          {key: 'events'}
+        ])
+      ).toEqual([])
+    })
+  })
 })
