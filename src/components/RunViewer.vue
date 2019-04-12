@@ -2,12 +2,12 @@
   <div class="container">
     <div class="notFound" test-label="notFound" v-if="notFound">
       <p>
-        The run with id {{$route.params.id}} was not found.
+        The run with id {{$route.params.runId}} was not found.
       </p>
     </div>
     <div class="error" test-label="error" v-if="error">
       <p>
-        There was an error retrieving the run with id {{$route.params.id}}
+        There was an error retrieving the run with id {{$route.params.runId}}
       </p>
       <p>{{error}}</p>
     </div>

@@ -7,7 +7,7 @@ const isDefined = (val) => {
  * @param {Array<Object>} keys - parent keys of the item that should be inserted, signature [{ key: String, [value]: String }]
  * @param {Object} data - Data to insert at the location indicated by keys
  */
-export function create (keys, data){
+export function create (keys, data, options={}){
   try{
     const lastKeyValue = keys.slice(-1)[0].value
     const pathParts = buildPathPartsFromKeys(keys)
@@ -31,6 +31,12 @@ export function create (keys, data){
     currentList.childKeys.sort()
     currentList.nextId = nextId >= currentList.nextId ? nextId+1 : currentList.nextId
     localStorage.setItem(listPath, JSON.stringify(currentList))
+    if( options.returnCreated ){
+      return {
+        path: `/${listPath}/${nextId}`,
+        item: data
+      }
+    }
   } catch (e) {
     e.code = 500
     throw e

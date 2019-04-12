@@ -125,6 +125,24 @@ describe('localStorageDriver', () => {
         })
       }).toThrow()
     })
+
+    it('Return the created object and key when flag is set', () => {
+      expect(
+        localStorageDriver.create([
+          {key: 'runs', value: null}
+        ], {
+          data: 'test'
+        }, {
+          returnCreated: true
+        })
+      ).toEqual({
+        path: '/runs/0',
+        item: {
+          data: 'test',
+          id: 0
+        }
+      })
+    })
   })
 
   describe('retrieve', () => {

@@ -27,7 +27,6 @@
               <div class="select">
                 <select 
                   v-model="form.game"
-                  ref="runGame"
                   test-label="formGame"
                 >
                   <option value="red">Pokémon Red</option>
@@ -35,6 +34,16 @@
                 </select>
               </div>
             </div>
+          </div>
+          <div class="field">
+            <label class="checkbox">
+              <input 
+                type="checkbox"
+                v-model="form.openRun"
+                test-label="openRun"
+              />
+              Open run after create ?
+            </label>
           </div>
           <div class="notification is-warning" v-if="hasWarning" test-label="warning">
             <p>Please fill out the following fields, they're required!</p>
@@ -85,7 +94,8 @@ export default {
     return {
       form: {
         name: (new Date()).toLocaleString(),
-        game: "red"
+        game: "red",
+        openRun: true
       },
       hasWarning: false,
       warningFields: [],
@@ -110,11 +120,14 @@ export default {
         this.warningFields = []
         //submit a new run!
         try{
-          await request('/runs', 'post', {
+          const createdRun = await request('/runs', 'post', {
             name: this.form.name,
             game: this.form.game
           })
-          this.onComplete()
+          if( this.form.openRun ){
+            this.$router.push(`/runs/${createdRun.id}`)
+          }
+          else this.onComplete()
         } catch (e){
           this.hasError = true
           this.errorMessage = e.message
