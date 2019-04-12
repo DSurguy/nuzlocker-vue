@@ -1,19 +1,38 @@
+const isDefined = (val) => {
+  return val !== undefined && val !== null
+}
+
 //TODO: Unit Tests
 //TODO: 404
+
+/**
+ * 
+ * @param {Array<Object>} keys - parent keys of the item that should be inserted, signature [{ key: String, [value]: String }]
+ * @param {Object} data - Data to insert at the location indicated by keys
+ */
 export function create (keys, data){
-  const path = buildPathPartsFromKeys(keys).join('/')
-  //get the current list data
-  const currentList = getList(path)
-  //create the individual item
+  const lastKeyValue = keys.slice(-1)[0].value
+  const pathParts = buildPathPartsFromKeys(keys)
+  let listPath
+  if( isDefined(lastKeyValue) ){
+    //get the current list data
+    listPath = pathParts.slice(0,-1).join('/')
+  }
+  else {
+    listPath = pathParts.join('/')
+  }
+  const currentList = getShallowList(listPath)
+  const nextId = isDefined(lastKeyValue) ? lastKeyValue : currentList.nextId
+  if( currentList.childKeys.find(key => key === nextId) ) throw new Error('Item already exists')
   localStorage.setItem(
-    `${path}/${currentList.nextId}`, 
-    JSON.stringify(Object.assign(data, {id: currentList.nextId}))
+    `${listPath}/${nextId}`, 
+    JSON.stringify(Object.assign(data, {id: nextId}))
   )
   //update the list
-  currentList.childKeys.push(currentList.nextId)
-  currentList.nextId++
-  delete currentList.children
-  localStorage.setItem(path, JSON.stringify(currentList))
+  currentList.childKeys.push(nextId)
+  currentList.childKeys.sort()
+  currentList.nextId = nextId >= currentList.nextId ? nextId+1 : currentList.nextId
+  localStorage.setItem(listPath, JSON.stringify(currentList))
 }
 
 export function update (keys, data){}
@@ -38,6 +57,20 @@ export function retrieve (keys){
     returnValue = JSON.parse(localStorage.getItem(path))
   }
   return returnValue
+}
+
+function getShallowList(path){
+  const listData = JSON.parse(localStorage.getItem(path))
+  if( !listData ) {
+    return {
+      nextId: 0,
+      childKeys: []
+    }
+  }
+  return {
+    nextId: listData.nextId,
+    childKeys: listData.childKeys
+  }
 }
 
 function getList(path){
@@ -67,7 +100,7 @@ function getList(path){
 function buildPathPartsFromKeys(keys){
   return keys.reduce((parts, key) => {
     parts.push(encodeURIComponent(key.key))
-    if( key.value !== undefined ) parts.push(`${key.value}`)
+    if( key.value !== undefined && key.value !== null ) parts.push(`${key.value}`)
     return parts
   }, [])
 }
