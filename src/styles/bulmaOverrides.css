@@ -1,3 +1,6 @@
+html {
+  overflow-y: auto;
+}
 .modal-card-head {
   justify-content: space-between;
 }

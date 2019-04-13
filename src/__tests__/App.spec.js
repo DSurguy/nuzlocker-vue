@@ -59,7 +59,7 @@ describe('routing', () => {
       }
     })
 
-    router.push("/run/1")
+    router.push("/runs/1")
 
     nextTick(() => {
       expect(

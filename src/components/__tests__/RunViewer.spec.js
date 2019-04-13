@@ -11,6 +11,7 @@ import { shallowMount } from '@vue/test-utils'
 import RunViewer from '../RunViewer.vue'
 import flush from 'flush-promises'
 import { translateGame } from '../../utils/pokemon.js'
+import EventRunStart from '../events/EventRunStart.vue'
 
 jest.mock('../../services/api/index.js')
 import { request, configureRequests } from '../../services/api/index.js'
@@ -103,6 +104,13 @@ describe('RunViewer', () => {
               }
             }
           }
+        },
+        {
+          path: '/runs/1/events',
+          method: 'get',
+          response: {
+            data: []
+          }
         }
       ])
 
@@ -124,6 +132,55 @@ describe('RunViewer', () => {
         .find('[test-label=runName]')
         .html()
       ).toBe(`<span test-label="runName">testytest</span>`)
+
+      done()
+    })
+
+    it('Display events of type run-start', async function (done) {
+      configureRequests([
+        {
+          path: '/runs/1',
+          method: 'get',
+          response: {
+            data: {
+              id: 1,
+              name: 'testytest',
+              game: 'red',
+              data: {
+                status: 'good'
+              }
+            }
+          }
+        },
+        {
+          path: '/runs/1/events',
+          method: 'get',
+          response: {
+            data: [
+              { id: 0, type: 'run-start'}
+            ]
+          }
+        }
+      ])
+
+      const wrapper = shallowMount(RunViewer, {
+        mocks: {
+          $route: {
+            path: '/runs/1',
+            params: {
+              runId: '1'
+            }
+          }
+        }
+      })
+
+      await flush()
+
+      expect(
+        wrapper
+        .findAll(EventRunStart)
+        .length
+      ).toBe(1)
 
       done()
     })

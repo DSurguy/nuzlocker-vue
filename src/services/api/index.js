@@ -12,7 +12,7 @@ myRouter.route('/runs', {
   get: async function (params){
     return delayedResolve(
       retrieve([
-        { key: 'runs', value: null}
+        { key: 'runs' }
       ])
     ) 
   },
@@ -45,6 +45,17 @@ myRouter.route('/runs/:runId', {
   },
   delete: async function (params){
     return true
+  }
+})
+
+myRouter.route('/runs/:runId/events', {
+  get: async function (params){
+    return delayedResolve(
+      retrieve([
+        { key: 'runs', value: params.runId},
+        { key: 'events'}
+      ])
+    )
   }
 })
 

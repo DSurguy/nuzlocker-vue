@@ -147,6 +147,7 @@ describe('CreateRunModal', () => {
       ])
       onComplete.mockClear()
 
+      wrapper.find('[test-label=openRun]').setChecked(false)
       wrapper.find('[test-label=formName]').setValue('test')
       wrapper.find('[test-label=buttonSubmit]').trigger('click')
 
@@ -172,7 +173,6 @@ describe('CreateRunModal', () => {
     ])
     onComplete.mockClear()
 
-    wrapper.find('[test-label=openRun]').setChecked()
     wrapper.find('[test-label=formName]').setValue('test')
     wrapper.find('[test-label=buttonSubmit]').trigger('click')
 
