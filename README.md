@@ -29,7 +29,7 @@ The following items should be completed for this project to be considered "compl
 - [ ] Features
   - [x] Create a run to track a nuzlocke challenge for Pokemon Red / Blue 
   - [ ] Track Run Events
-    - [ ] Run Started
+    - [x] Run Started
     - [ ] Starter Pokemon
     - [ ] Pokemon Seen
     - [ ] Pokemon Captured
