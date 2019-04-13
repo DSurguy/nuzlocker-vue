@@ -49,7 +49,8 @@ The following items should be completed for this project to be considered "compl
     - [x] Local Storage
 - [ ] Infrastructure
   - [x] Unit Tests
-  - [ ] Deployed to Server
+  - [x] Served from AWS
+  - [ ] Automated build and deployment
 
 
 ## Project setup
