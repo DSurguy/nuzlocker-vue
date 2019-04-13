@@ -27,8 +27,10 @@ The following nuzlocke ruleset will be supported, and any additional flexibility
 #### Completion Checklist
 The following items should be completed for this project to be considered "complete"
 - [ ] Features
-  - [ ] Create a run to track a nuzlocke challenge for Pokemon Red / Blue 
+  - [x] Create a run to track a nuzlocke challenge for Pokemon Red / Blue 
   - [ ] Track Run Events
+    - [x] Run Started
+    - [ ] Starter Pokemon
     - [ ] Pokemon Seen
     - [ ] Pokemon Captured
     - [ ] Route Encounters
@@ -44,10 +46,9 @@ The following items should be completed for this project to be considered "compl
       - [ ] Alive / Dead
 - [ ] Data Storage
   - [ ] Persistent
-    - [ ] Local Storage
-    - [ ] Database ? (I consider this a stretch goal for now)
+    - [x] Local Storage
 - [ ] Infrastructure
-  - [ ] Unit Tests
+  - [x] Unit Tests
   - [ ] Deployed to Server
 
 

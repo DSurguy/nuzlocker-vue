@@ -1,23 +1,19 @@
 <template>
-  <div id="app">
-    <div class="container">
-      <RunList />
-    </div>
-  </div>
+  <router-view class="view"></router-view>
 </template>
 
 <script>
-import RunList from './components/RunList.vue'
-
 export default {
   name: 'app',
-  components: {
-    RunList
-  }
+  components: {}
 }
 </script>
 
 <style>
+/* globals */
+html, body, #app, .view {
+  height: 100%;
+}
 /* bulma color scheme and font */
 :root {
   --var-color-white: hsl(0, 0%, 100%);
@@ -39,14 +35,28 @@ export default {
   --var-color-grey-lighter: hsl(0, 0%, 86%);
   --var-color-white-ter: hsl(0, 0%, 96%);
   --var-color-white-bis: hsl(0, 0%, 98%);
-}
 
-#app {
-  margin-top: 60px;
-}
+  --var-pokemon-red: #FF8963;
+  --var-pokemon-red-dark: #C24C26;
+  --var-pokemon-red-light: #F9AD95;
 
-.container {
-  display: flex;
-  justify-content: center;
+  --var-pokemon-blue: #97CADB;
+  --var-pokemon-blue-dark: #587C8A;
+  --var-pokemon-blue-light: #ACD4E2;
+
+}
+.bg-pokemon-red{
+  background-color: var(--var-pokemon-red);
+  color: #fff;
+  text-shadow: 0 0 1px var(--var-pokemon-red-dark);
+}
+.bg-pokemon-red-dark{
+  background-color: var(--var-pokemon-red-dark);
+  color: #fff;
+}
+.bg-pokemon-red-light{
+  background-color: var(--var-pokemon-red-light);
+  color: #fff;
+  text-shadow: 0 0 1px var(--var-pokemon-red-dark);
 }
 </style>

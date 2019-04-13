@@ -1,13 +1,20 @@
 import Vue from 'vue'
-import App from './App.vue'
+import VueRouter from 'vue-router'
 
 import 'bulma/css/bulma.min.css'
 import './styles/bulmaOverrides.css'
 import './assets/fontawesome.css'
 import '@fortawesome/fontawesome-free/css/fontawesome.css'
+import routes from './routes.js'
 
 Vue.config.productionTip = false
+Vue.use(VueRouter)
+
+const router = new VueRouter({
+  routes,
+  mode: 'history',
+})
 
 new Vue({
-  render: h => h(App),
+  router
 }).$mount('#app')

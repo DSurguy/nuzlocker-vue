@@ -25,5 +25,6 @@ module.exports = {
   testURL: 'http://localhost/',
   collectCoverageFrom: [
     'src/**/*.{js,vue}'
-  ]
+  ],
+  setupFiles: ['./jestMocks/localStorageMock.js']
 }

@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils'
+import { shallowMount, createLocalVue } from '@vue/test-utils'
 import CreateRunModal from '../CreateRunModal.vue'
 jest.mock('../../../services/api/index.js')
 import { request, configureRequests } from '../../../services/api/index.js'
@@ -10,7 +10,13 @@ let onClose = jest.fn()
 describe('CreateRunModal', () => {
   let wrapper
   beforeEach(() => {
-    wrapper = mount(CreateRunModal, {
+    wrapper = shallowMount(CreateRunModal, {
+      localVue: createLocalVue(),
+      mocks: {
+        $router: {
+          push: jest.fn()
+        }
+      },
       propsData: {
         onClose,
         onComplete
@@ -50,7 +56,7 @@ describe('CreateRunModal', () => {
     it('Initialize run name to a very recent time string', () => {
       //remount to get a more recent date
       const firstTime = (new Date()).toLocaleString()
-      wrapper = mount(CreateRunModal, {
+      wrapper = shallowMount(CreateRunModal, {
         propsData: {
           onClose,
           onComplete
@@ -127,18 +133,21 @@ describe('CreateRunModal', () => {
       done()
     })
 
-    it('Call onComplete after creating a run', async (done) => {
+    it('Call onComplete after creating a run if "open run" is not checked', async (done) => {
       configureRequests([
         {
           path: '/runs', 
           method: 'post', 
           response: {
-            data: true
+            data: {
+              id: 5
+            }
           }
         }
       ])
       onComplete.mockClear()
 
+      wrapper.find('[test-label=openRun]').setChecked(false)
       wrapper.find('[test-label=formName]').setValue('test')
       wrapper.find('[test-label=buttonSubmit]').trigger('click')
 
@@ -148,6 +157,30 @@ describe('CreateRunModal', () => {
       ).toHaveBeenCalled()
       done()
     })
+  })
+
+  it('Navigate to the new run if "open run" is checked', async (done) => {
+    configureRequests([
+      {
+        path: '/runs', 
+        method: 'post', 
+        response: {
+          data: {
+            id: 5
+          }
+        }
+      }
+    ])
+    onComplete.mockClear()
+
+    wrapper.find('[test-label=formName]').setValue('test')
+    wrapper.find('[test-label=buttonSubmit]').trigger('click')
+
+    await flush()
+    expect(
+      wrapper.vm.$router.push
+    ).toHaveBeenCalledWith('/runs/5')
+    done()
   })
 
   it('Show an error when the request fails', async (done) => {

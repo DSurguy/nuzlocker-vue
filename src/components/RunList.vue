@@ -1,36 +1,38 @@
 <template>
-  <div class="run-list">
-    <div class="run-list-header">
-      <div class="notification is-danger" v-if="error">
-        <p>There was an error while retrieving runs:</p>
-        <p>
-          <i>
-            <span test-label="requestError">{{error}}</span>
-          </i>
-        </p>
+  <div class="container">
+    <div class="run-list">
+      <div class="run-list-header">
+        <div class="notification is-danger" v-if="error">
+          <p>There was an error while retrieving runs:</p>
+          <p>
+            <i>
+              <span test-label="requestError">{{error}}</span>
+            </i>
+          </p>
+        </div>
+        <button 
+          test-label="createNewRunButton"
+          class="button is-primary"
+          v-on:click="createRun"
+        >
+          <i class="fas fa-plus"></i>Create Run
+        </button>
       </div>
-      <button 
-        test-label="createNewRunButton"
-        class="button is-primary"
-        v-on:click="createRun"
+      <div 
+        class="run" 
+        v-for="run in runs" 
+        :key="run.id"
+        test-label="run"
       >
-        <i class="fas fa-plus"></i>Create Run
-      </button>
+        <h2><span test-label="runName">{{run.name}}</span></h2>
+        <p>Game: <span test-label="runGame">{{translateGame(run.game)}}</span></p>
+      </div>
+      <CreateRunModal 
+        v-if="createRunActive" 
+        v-bind:onClose="onCreateRunModalClose"
+        v-bind:onComplete="onCreateRunModalComplete"
+      />
     </div>
-    <div 
-      class="run" 
-      v-for="run in runs" 
-      :key="run.id"
-      test-label="run"
-    >
-      <h2><span test-label="runName">{{run.name}}</span></h2>
-      <p>Game: <span test-label="runGame">{{translateGame(run.game)}}</span></p>
-    </div>
-    <CreateRunModal 
-      v-if="createRunActive" 
-      v-bind:onClose="onCreateRunModalClose"
-      v-bind:onComplete="onCreateRunModalComplete"
-    />
   </div>
 </template>
 

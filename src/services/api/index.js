@@ -12,28 +12,50 @@ myRouter.route('/runs', {
   get: async function (params){
     return delayedResolve(
       retrieve([
-        { key: 'run', value: null}
+        { key: 'runs' }
       ])
     ) 
   },
   post: async function (params, body){
-    return delayedResolve(
-      create([
-        { key: 'run', value: null }
-      ], body)
-    ) 
+    const newRun = create([
+      { key: 'runs' }
+    ], body, {
+      returnCreated: true
+    })
+    create([
+      { key: 'runs', value: newRun.item.id },
+      { key: 'events' }
+    ], {
+      type: 'run-start'
+    })
+    return delayedResolve(newRun.item)
   }
 })
 
 myRouter.route('/runs/:runId', {
   get: async function (params){
-    return true
+    return delayedResolve(
+      retrieve([
+        { key: 'runs', value: params.runId}
+      ])
+    )
   },
   put: async function (params, body){
     return true
   },
   delete: async function (params){
     return true
+  }
+})
+
+myRouter.route('/runs/:runId/events', {
+  get: async function (params){
+    return delayedResolve(
+      retrieve([
+        { key: 'runs', value: params.runId},
+        { key: 'events'}
+      ])
+    )
   }
 })
 
