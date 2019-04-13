@@ -1,5 +1,7 @@
 # nuzlocker-vue
 
+https://nuzlocker.surgingforward.net
+
 ## Overview and Goals
 This project serves as a learning tool for Vue.
 
@@ -49,7 +51,8 @@ The following items should be completed for this project to be considered "compl
     - [x] Local Storage
 - [ ] Infrastructure
   - [x] Unit Tests
-  - [ ] Deployed to Server
+  - [x] Served from AWS
+  - [ ] Automated build and deployment
 
 
 ## Project setup
