@@ -2,6 +2,9 @@
   <div class="event-container">
     <p>{{ introText }}</p>
     <div class="image cycle"></div>
+    <div class="prompt">
+      <button class="button is-light is-outlined">Select your starter!</button>
+    </div>
   </div>
 </template>
 
@@ -25,5 +28,14 @@ export default {
 </script>
 
 <style scoped>
-
+.event-container {
+  padding: 20px 0;
+  width: 400px;
+  text-align: center;
+}
+.prompt {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
 </style>
