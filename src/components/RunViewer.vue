@@ -33,7 +33,7 @@
 
 <script>
 import { request } from '../services/api/index.js'
-import { translateGame } from '../utils/pokemon.js'
+import { translateGame } from '../utils/dataHelpers.js'
 import EventRunStart from './events/EventRunStart.vue'
 
 const eventTypeMapping = {

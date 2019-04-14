@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import {gameIntroText} from '../../utils/pokemon.js'
+import {gameIntroText} from '../../utils/dataHelpers.js'
 
 export default {
   name: 'EventRunStart',

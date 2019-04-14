@@ -10,7 +10,7 @@
 import { shallowMount } from '@vue/test-utils'
 import RunViewer from '../RunViewer.vue'
 import flush from 'flush-promises'
-import { translateGame } from '../../utils/pokemon.js'
+import { translateGame } from '../../utils/dataHelpers.js'
 import EventRunStart from '../events/EventRunStart.vue'
 
 jest.mock('../../services/api/index.js')
