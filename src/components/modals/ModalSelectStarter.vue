@@ -170,7 +170,7 @@ export default {
       }
     },
     onClose: function (){
-      this.onComplete(false)
+      this.onComplete(true)
     }
   }
 }

@@ -212,6 +212,6 @@ describe('ModalSelectStarter', function () {
     wrapper.find('[test-label=buttonClose]').trigger('click')
     expect(
       onComplete
-    ).toHaveBeenCalledWith(false)
+    ).toHaveBeenCalledWith(true)
   })
 })

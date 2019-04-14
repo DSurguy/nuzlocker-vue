@@ -12,6 +12,9 @@ export function getPokemonByGame(gameId){
   return result
 }
 
+export function getPokemonById(pokemonId){
+  return pokemon.byId[pokemonId]
+}
 
 export function translateGame(gameId){
   return safeGet(games, `byId.${gameId}.name`, "")

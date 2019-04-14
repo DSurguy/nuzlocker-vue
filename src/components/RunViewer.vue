@@ -50,12 +50,14 @@
 <script>
 import { request } from '../services/api/index.js'
 import EventRunStart from './events/EventRunStart.vue'
+import EventEncounter from './events/EventEncounter.vue'
 import ModalSelectStarter from './modals/ModalSelectStarter.vue'
 
 import safeGet from '../utils/safeGet.js'
 
 const eventTypeMapping = {
-  'run-start': EventRunStart
+  'run-start': EventRunStart,
+  'encounter': EventEncounter
 }
 
 export default {
@@ -111,8 +113,8 @@ export default {
     onSelectStarterClick: function (){
       this.starterModalActive = true
     },
-    onSelectStarterComplete: async function (completed=true){
-      if( completed ){
+    onSelectStarterComplete: async function (cancelled=false){
+      if( !cancelled ){
         await this._updateRunEventsFromStore()
       }
       this.starterModalActive = false;
