@@ -10,11 +10,10 @@
 import { shallowMount } from '@vue/test-utils'
 import RunViewer from '../RunViewer.vue'
 import flush from 'flush-promises'
-import { translateGame } from '../../utils/dataHelpers.js'
 import EventRunStart from '../events/EventRunStart.vue'
 
 jest.mock('../../services/api/index.js')
-import { request, configureRequests } from '../../services/api/index.js'
+import { configureRequests } from '../../services/api/index.js'
 
 describe('RunViewer', () => {
   describe('Data Loading', () => {
