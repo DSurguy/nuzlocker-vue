@@ -1,6 +1,6 @@
 <template>
-  <div class="run-viewer bg-pokemon-red-dark">
-    <div class="runMeta bg-pokemon-red" v-if="!error && !notFound">
+  <div class="run-viewer">
+    <div class="runMeta" v-if="!error && !notFound">
       <div class="meta-name"><span test-label="runName">{{run.name}}</span></div>
       <div class="meta-game" test-label="runGame"></div>
       <div class="meta-status" test-label="runStatus"></div>
@@ -27,7 +27,6 @@
             v-bind:is="event.component" 
             v-bind:run="run"
             v-bind:event="event"
-            class="event"
           ></component>
         </div>
         <div class="prompt" v-if="showSelectStarter">
@@ -138,6 +137,8 @@ export default {
   display: flex;
   width: 100%;
   height: 64px;
+  background-color: var(--var-color-grey-dark);
+  color: #fff;
 }
 .events {
   width: 100%;

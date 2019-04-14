@@ -59,4 +59,9 @@ html, body, #app, .view {
   color: #fff;
   text-shadow: 0 0 1px var(--var-pokemon-red-dark);
 }
+
+/* App-Wide styles */
+.view {
+  background-color: var(--var-color-grey-lighter);
+}
 </style>
