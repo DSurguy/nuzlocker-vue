@@ -13,19 +13,22 @@
           <img src="https://via.placeholder.com/24" />
         </div>
         <div class="species">
-          <span>Bulbasaur</span>
+          <span>{{pokemonDetails.name}}</span>
         </div>
         <div class="level-details">
           <span class="level-label">Lv</span>
-          <span class="level-data">5</span>
+          <span class="level-data">{{event.level}}</span>
         </div>
       </div>
-      <div class="capture-details">
+      <div 
+        class="capture-details"
+        v-bind:class="{failed: !event.outcome.captured}"
+      >
         <div class="sprite">
-          <img src="https://via.placeholder.com/20" />
+          <img v-bind:src="captureSprite" />
         </div>
         <div class="capture-data">
-          <span class="capture-name">Timothy</span>  
+          <span class="capture-name">{{event.outcome.captured ? event.outcome.name : 'Not Captured'}}</span>  
         </div>
       </div>
     </div>
@@ -44,7 +47,8 @@ export default {
   },
   data: function (){
     return {
-      pokemonDetails: getPokemonById(this.event.species)
+      pokemonDetails: getPokemonById(this.event.species),
+      captureSprite: "https://via.placeholder.com/20"
     }
   },
   methods: {}
