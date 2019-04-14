@@ -2,6 +2,8 @@
 
 https://nuzlocker.surgingforward.net
 
+[![Codeship Status for DSurguy/nuzlocker-vue](https://app.codeship.com/projects/3fa72ba0-40a1-0137-4c79-3e774fd31b7a/status?branch=master)](https://app.codeship.com/projects/335883)
+
 ## Overview and Goals
 This project serves as a learning tool for Vue.
 
@@ -79,6 +81,3 @@ npm run test
 ```
 npm run lint
 ```
-
-##### Codeship Testing
-1
