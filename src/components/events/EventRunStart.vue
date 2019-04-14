@@ -2,9 +2,6 @@
   <div class="event-container">
     <p>{{ introText }}</p>
     <div class="image cycle"></div>
-    <div class="prompt">
-      <button class="button is-light is-outlined">Select your starter!</button>
-    </div>
   </div>
 </template>
 
@@ -22,8 +19,7 @@ export default {
     return {
       introText: gameIntroText(this.run.game)
     }
-  },
-  methods: {}
+  }
 }
 </script>
 

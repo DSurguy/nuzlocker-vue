@@ -18,14 +18,25 @@
         <p>{{error}}</p>
       </div>
       <div class="events">
-        <component 
-          v-for="event in runEvents" 
-          v-bind:is="event.component" 
-          v-bind:key="event.id"
-          v-bind:run="run"
-          v-bind:event="event"
+        <div 
           class="event"
-        ></component>
+          v-for="event in runEvents"
+          v-bind:key="event.id"
+        >
+          <component 
+            v-bind:is="event.component" 
+            v-bind:run="run"
+            v-bind:event="event"
+            class="event"
+          ></component>
+        </div>
+        <div class="prompt" v-if="showSelectStarter">
+          <button 
+            class="button is-light is-outlined"
+            v-on:click="onSelectStarterClick"
+            test-label="selectStarterButton"
+          >Select your starter!</button>
+        </div>
       </div>
     </div>
   </div>
@@ -35,6 +46,7 @@
 import { request } from '../services/api/index.js'
 import { translateGame } from '../utils/dataHelpers.js'
 import EventRunStart from './events/EventRunStart.vue'
+import safeGet from '../utils/safeGet.js'
 
 const eventTypeMapping = {
   'run-start': EventRunStart
@@ -58,7 +70,8 @@ export default {
       runEvents: [],
       loaded: false,
       notFound: null,
-      error: null
+      error: null,
+      showSelectStarter: false
     }
   },
   mounted: async function () {
@@ -69,6 +82,9 @@ export default {
           event.component = eventTypeMapping[event.type]
           return event
         })
+      if( safeGet(this.runEvents.slice(-1)[0], 'type') === 'run-start' ){
+        this.showSelectStarter = true;
+      }
       this.loaded = true
     }
     catch (e) {
@@ -83,7 +99,11 @@ export default {
       }
     }
   },
-  methods: {}
+  methods: {
+    onSelectStarterClick: function (){
+      console.log('click')
+    }
+  }
 }
 </script>
 
@@ -104,8 +124,16 @@ export default {
   height: 64px;
 }
 .events {
-  display: flex;
   width: 100%;
+}
+.event {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.prompt {
+  width: 100%;
+  display: flex;
   justify-content: center;
 }
 </style>

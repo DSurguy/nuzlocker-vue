@@ -183,5 +183,54 @@ describe('RunViewer', () => {
 
       done()
     })
+
+    it('Display the select starter button if the last event was run-start', async function (done) {
+      configureRequests([
+        {
+          path: '/runs/1',
+          method: 'get',
+          response: {
+            data: {
+              id: 1,
+              name: 'testytest',
+              game: 'red',
+              data: {
+                status: 'good'
+              }
+            }
+          }
+        },
+        {
+          path: '/runs/1/events',
+          method: 'get',
+          response: {
+            data: [
+              { id: 0, type: 'run-start'}
+            ]
+          }
+        }
+      ])
+
+      const wrapper = shallowMount(RunViewer, {
+        mocks: {
+          $route: {
+            path: '/runs/1',
+            params: {
+              runId: '1'
+            }
+          }
+        }
+      })
+
+      await flush()
+
+      expect(
+        wrapper
+        .find(`[test-label=selectStarterButton]`)
+        .exists()
+      ).toBe(true)
+
+      done()
+    })
   })
 })
