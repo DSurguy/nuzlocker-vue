@@ -42,6 +42,7 @@
     <ModalSelectStarter
       v-if="starterModalActive"
       v-bind:run="run"
+      v-bind:onComplete="onSelectStarterComplete"
     />
   </div>
 </template>
@@ -74,7 +75,6 @@ export default {
         }
       },
       runEvents: [],
-      loaded: false,
       notFound: null,
       error: null,
       showSelectStarter: false,
@@ -84,18 +84,9 @@ export default {
   mounted: async function () {
     try{
       this.run = await request(`/runs/${this.$route.params.runId}`, 'get')
-      this.runEvents = (await request(`/runs/${this.run.id}/events`, 'get'))
-        .map((event) => {
-          event.component = eventTypeMapping[event.type]
-          return event
-        })
-      if( safeGet(this.runEvents.slice(-1)[0], 'type') === 'run-start' ){
-        this.showSelectStarter = true;
-      }
-      this.loaded = true
+      await this._updateRunEventsFromStore()
     }
     catch (e) {
-      this.loaded = true
       if( e.code === 404 ){
         this.error = null
         this.notFound = true
@@ -107,8 +98,24 @@ export default {
     }
   },
   methods: {
+    _updateRunEventsFromStore: async function (){
+      this.runEvents = (await request(`/runs/${this.run.id}/events`, 'get'))
+        .map((event) => {
+          event.component = eventTypeMapping[event.type]
+          return event
+        })
+      if( safeGet(this.runEvents.slice(-1)[0], 'type') === 'run-start' ){
+        this.showSelectStarter = true;
+      }
+    },
     onSelectStarterClick: function (){
       this.starterModalActive = true
+    },
+    onSelectStarterComplete: async function (completed=true){
+      if( completed ){
+        await this._updateRunEventsFromStore()
+      }
+      this.starterModalActive = false;
     }
   }
 }

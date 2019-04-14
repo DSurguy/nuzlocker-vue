@@ -58,7 +58,7 @@
           <div class="notification is-danger" v-if="hasError" test-label="error">
             <p>There was an error while creating your run:</p>
             <p>
-              <i>
+              <i test-label="errorMessage">
                 {{errorMessage}}
               </i>
             </p>
@@ -87,12 +87,15 @@
 
 <script>
 import { getPokemonByGame } from '../../utils/dataHelpers.js'
+import { request } from '../../services/api/index.js'
+import isDefined from '../../utils/isDefined.js'
 
 export default {
   name: 'ModalSelectStarter',
   components: {},
   props: {
-    run: Object
+    run: Object,
+    onComplete: Function
   },
   data: function () {
     return {
@@ -112,10 +115,63 @@ export default {
   },
   methods: {
     onSpeciesChange: function (){},
-    onNameChange: function (){},
-    onLevelChange: function (){},
-    onSubmit: function (){},
-    onClose: function (){}
+    onNameChange: function (){
+      if( this.form.fields.name !== '' && isDefined(this.form.fields.name) ){
+        this.warningFields = this.warningFields.filter(field => field !== 'name')
+        if( this.warningFields.length === 0 )
+          this.hasWarning = false
+      }
+    },
+    onLevelChange: function (){
+      if( this.form.fields.level !== '' && isDefined(this.form.fields.level) ){
+        this.warningFields = this.warningFields.filter(field => field !== 'level')
+        if( this.warningFields.length === 0 )
+          this.hasWarning = false
+      }
+    },
+    onSubmit: async function (){
+      const requiredFields = [
+        'name',
+        'level'
+      ]
+      let newWarningFields = []
+      for( let field of requiredFields ){
+        if( this.form.fields[field] === '' || !isDefined(this.form.fields[field]) ){
+          newWarningFields.push(field)
+        }
+      }
+      if( newWarningFields.length ){
+        this.hasWarning = true
+        this.warningFields = newWarningFields
+      }
+      else{
+        this.hasWarning = false
+        this.warningFields = []
+        try{
+          await request(`/runs/${this.run.id}/events`, 'post', {
+            type: 'encounter',
+            species: this.form.fields.species,
+            level: this.form.fields.level,
+            source: {
+              location: false,
+              event: true,
+              identifier: 'starter'
+            },
+            outcome: {
+              captured: true,
+              name: this.form.fields.name,
+            }
+          })
+          this.onComplete()
+        } catch (e){
+          this.hasError = true
+          this.errorMessage = e.message
+        }
+      }
+    },
+    onClose: function (){
+      this.onComplete(false)
+    }
   }
 }
 </script>

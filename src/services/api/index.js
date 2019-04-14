@@ -56,6 +56,14 @@ myRouter.route('/runs/:runId/events', {
         { key: 'events'}
       ])
     )
+  },
+  post: async function (params, body){
+    return delayedResolve(
+      create([
+        { key: 'runs', value: params.runId },
+        { key: 'events' }
+      ], body)
+    )
   }
 })
 
