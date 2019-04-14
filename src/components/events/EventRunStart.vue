@@ -2,14 +2,11 @@
   <div class="event-container">
     <p>{{ introText }}</p>
     <div class="image cycle"></div>
-    <div class="prompt">
-      <button class="button is-light is-outlined">Select your starter!</button>
-    </div>
   </div>
 </template>
 
 <script>
-import {gameIntroText} from '../../utils/pokemon.js'
+import {gameIntroText} from '../../utils/dataHelpers.js'
 
 export default {
   name: 'EventRunStart',
@@ -22,8 +19,7 @@ export default {
     return {
       introText: gameIntroText(this.run.game)
     }
-  },
-  methods: {}
+  }
 }
 </script>
 

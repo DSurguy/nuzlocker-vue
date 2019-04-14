@@ -18,23 +18,41 @@
         <p>{{error}}</p>
       </div>
       <div class="events">
-        <component 
-          v-for="event in runEvents" 
-          v-bind:is="event.component" 
-          v-bind:key="event.id"
-          v-bind:run="run"
-          v-bind:event="event"
+        <div 
           class="event"
-        ></component>
+          v-for="event in runEvents"
+          v-bind:key="event.id"
+        >
+          <component 
+            v-bind:is="event.component" 
+            v-bind:run="run"
+            v-bind:event="event"
+            class="event"
+          ></component>
+        </div>
+        <div class="prompt" v-if="showSelectStarter">
+          <button 
+            class="button is-light is-outlined"
+            v-on:click="onSelectStarterClick"
+            test-label="selectStarterButton"
+          >Select your starter!</button>
+        </div>
       </div>
     </div>
+    <ModalSelectStarter
+      v-if="starterModalActive"
+      v-bind:run="run"
+      v-bind:onComplete="onSelectStarterComplete"
+    />
   </div>
 </template>
 
 <script>
 import { request } from '../services/api/index.js'
-import { translateGame } from '../utils/pokemon.js'
 import EventRunStart from './events/EventRunStart.vue'
+import ModalSelectStarter from './modals/ModalSelectStarter.vue'
+
+import safeGet from '../utils/safeGet.js'
 
 const eventTypeMapping = {
   'run-start': EventRunStart
@@ -43,7 +61,8 @@ const eventTypeMapping = {
 export default {
   name: 'RunViewer',
   components: {
-    EventRunStart
+    EventRunStart,
+    ModalSelectStarter
   },
   props: {},
   data: function (){
@@ -56,23 +75,18 @@ export default {
         }
       },
       runEvents: [],
-      loaded: false,
       notFound: null,
-      error: null
+      error: null,
+      showSelectStarter: false,
+      starterModalActive: false
     }
   },
   mounted: async function () {
     try{
       this.run = await request(`/runs/${this.$route.params.runId}`, 'get')
-      this.runEvents = (await request(`/runs/${this.run.id}/events`, 'get'))
-        .map((event) => {
-          event.component = eventTypeMapping[event.type]
-          return event
-        })
-      this.loaded = true
+      await this._updateRunEventsFromStore()
     }
     catch (e) {
-      this.loaded = true
       if( e.code === 404 ){
         this.error = null
         this.notFound = true
@@ -83,7 +97,27 @@ export default {
       }
     }
   },
-  methods: {}
+  methods: {
+    _updateRunEventsFromStore: async function (){
+      this.runEvents = (await request(`/runs/${this.run.id}/events`, 'get'))
+        .map((event) => {
+          event.component = eventTypeMapping[event.type]
+          return event
+        })
+      if( safeGet(this.runEvents.slice(-1)[0], 'type') === 'run-start' ){
+        this.showSelectStarter = true;
+      }
+    },
+    onSelectStarterClick: function (){
+      this.starterModalActive = true
+    },
+    onSelectStarterComplete: async function (completed=true){
+      if( completed ){
+        await this._updateRunEventsFromStore()
+      }
+      this.starterModalActive = false;
+    }
+  }
 }
 </script>
 
@@ -104,8 +138,16 @@ export default {
   height: 64px;
 }
 .events {
-  display: flex;
   width: 100%;
+}
+.event {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.prompt {
+  width: 100%;
+  display: flex;
   justify-content: center;
 }
 </style>

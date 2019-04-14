@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils'
 import RunList from '../RunList.vue'
 import CreateRunModal from '../modals/CreateRunModal.vue'
 import flush from 'flush-promises'
-import {translateGame} from '../../utils/pokemon.js'
+import {translateGame} from '../../utils/dataHelpers.js'
 
 jest.mock('../../services/api/index.js')
 import { request, configureRequests } from '../../services/api/index.js'
