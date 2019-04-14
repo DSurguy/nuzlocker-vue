@@ -10,9 +10,7 @@ const games = {
     introText: "A world of dreams and adventures with Pokemon awaits! Let's go!",
     generation: 1
   }],
-  byId: {
-
-  }
+  byId: {}
 }
 
 //copy references by id
@@ -20,4 +18,4 @@ games.items.forEach((item, index) => {
   games.byId[item.id] = games.items[index]
 })
 
-export default games;
+export default games

@@ -39,13 +39,18 @@
         </div>
       </div>
     </div>
+    <ModalSelectStarter
+      v-if="starterModalActive"
+      v-bind:run="run"
+    />
   </div>
 </template>
 
 <script>
 import { request } from '../services/api/index.js'
-import { translateGame } from '../utils/dataHelpers.js'
 import EventRunStart from './events/EventRunStart.vue'
+import ModalSelectStarter from './modals/ModalSelectStarter.vue'
+
 import safeGet from '../utils/safeGet.js'
 
 const eventTypeMapping = {
@@ -55,7 +60,8 @@ const eventTypeMapping = {
 export default {
   name: 'RunViewer',
   components: {
-    EventRunStart
+    EventRunStart,
+    ModalSelectStarter
   },
   props: {},
   data: function (){
@@ -71,7 +77,8 @@ export default {
       loaded: false,
       notFound: null,
       error: null,
-      showSelectStarter: false
+      showSelectStarter: false,
+      starterModalActive: false
     }
   },
   mounted: async function () {
@@ -101,7 +108,7 @@ export default {
   },
   methods: {
     onSelectStarterClick: function (){
-      console.log('click')
+      this.starterModalActive = true
     }
   }
 }

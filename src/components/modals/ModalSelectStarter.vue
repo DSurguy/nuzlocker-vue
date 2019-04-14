@@ -92,12 +92,11 @@ export default {
   name: 'ModalSelectStarter',
   components: {},
   props: {
-    game: Object,
     run: Object
   },
   data: function () {
     return {
-      pokemonList: getPokemonByGame(this.game.id),
+      pokemonList: getPokemonByGame(this.run.game),
       form: {
         fields: {
           name: "",
