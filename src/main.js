@@ -5,6 +5,7 @@ import 'bulma/css/bulma.min.css'
 import './styles/bulmaOverrides.css'
 import './assets/fontawesome.css'
 import '@fortawesome/fontawesome-free/css/fontawesome.css'
+import './styles/sprite-pokemon.css'
 import routes from './routes.js'
 
 Vue.config.productionTip = false

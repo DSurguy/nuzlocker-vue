@@ -10,7 +10,10 @@
     <div class="event-encounter-details">
       <div class="pokemon-details bg-pokemon-red-dark">
         <div class="sprite">
-          <img src="https://via.placeholder.com/24" />
+          <div 
+            class="sprite-pokemon"
+            v-bind:class="{[`i-${event.species}`]: true}"
+          ></div>
         </div>
         <div class="species">
           <span>{{pokemonDetails.name}}</span>
@@ -24,9 +27,7 @@
         class="capture-details"
         v-bind:class="{failed: !event.outcome.captured}"
       >
-        <div class="sprite">
-          <img v-bind:src="captureSprite" />
-        </div>
+        <img class="sprite" v-bind:src="captureIcon" />
         <div class="capture-data">
           <span class="capture-name">{{event.outcome.captured ? event.outcome.name : 'Not Captured'}}</span>  
         </div>
@@ -37,6 +38,7 @@
 
 <script>
 import { getPokemonById } from '../../utils/dataHelpers.js'
+import iconPokeball from '../../assets/icons/pokeball.png'
 
 export default {
   name: 'EventEncounter',
@@ -48,7 +50,7 @@ export default {
   data: function (){
     return {
       pokemonDetails: getPokemonById(this.event.species),
-      captureSprite: "https://via.placeholder.com/20"
+      captureIcon: iconPokeball
     }
   },
   methods: {}
@@ -111,13 +113,15 @@ export default {
 }
 .pokemon-details .sprite {
   border-right: 1px solid var(--var-pokemon-red);
-  width: 40px;
-  margin-left: 6px;
+  width: 46px;
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
 }
+.pokemon-details .sprite .sprite-pokemon {
+  margin-left: -6px;
+}
+
 .pokemon-details .species {
   flex-grow: 1;
   text-align: center;
@@ -150,9 +154,14 @@ export default {
 .capture-details.failed{
   background-color: var(--var-color-grey-lighter);
 }
+.capture-details.failed .sprite {
+  filter: grayscale(100%);
+  filter: gray;
+}
 .capture-details .sprite {
-  margin: 2px;
+  width: 20px;
   height: 20px;
+  margin: 2px;
 }
 .capture-details .capture-data{
   line-height: 22px;
