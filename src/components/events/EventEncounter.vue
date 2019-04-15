@@ -4,7 +4,7 @@
       <div class="event-icon">
         <i class="fas fa-exclamation"></i>
       </div>
-      <h3 class="source">Professor Oak's Laboratory</h3>
+      <h3 class="source">{{sourceName}}</h3>
       <div class="header-fade"></div>
     </div>
     <div class="event-encounter-details">
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { getPokemonById } from '../../utils/dataHelpers.js'
+import { getPokemonById, getEncounterSourceByGame } from '../../utils/dataHelpers.js'
 import iconPokeball from '../../assets/icons/pokeball.png'
 
 export default {
@@ -50,6 +50,7 @@ export default {
   data: function (){
     return {
       pokemonDetails: getPokemonById(this.event.species),
+      sourceName: getEncounterSourceByGame(this.run.game, this.event.source.type, this.event.source.id),
       captureIcon: iconPokeball
     }
   },

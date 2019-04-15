@@ -153,9 +153,8 @@ export default {
             species: this.form.fields.species,
             level: this.form.fields.level,
             source: {
-              location: false,
-              event: true,
-              identifier: 'starter'
+              type: 'event',
+              id: 'starter'
             },
             outcome: {
               captured: true,
