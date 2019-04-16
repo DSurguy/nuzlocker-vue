@@ -117,6 +117,7 @@ export default {
         await this._updateRunEventsFromStore()
       }
       this.showSelectStarter = false;
+      this.starterModalActive = false;
     }
   }
 }
