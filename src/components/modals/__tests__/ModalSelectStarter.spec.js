@@ -142,9 +142,8 @@ describe('ModalSelectStarter', function () {
       species,
       level,
       source: {
-        location: false,
-        event: true,
-        identifier: 'starter'
+        type: 'event',
+        id: 'starter'
       },
       outcome: {
         captured: true,
@@ -212,6 +211,6 @@ describe('ModalSelectStarter', function () {
     wrapper.find('[test-label=buttonClose]').trigger('click')
     expect(
       onComplete
-    ).toHaveBeenCalledWith(false)
+    ).toHaveBeenCalledWith(true)
   })
 })
