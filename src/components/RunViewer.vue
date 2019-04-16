@@ -116,7 +116,7 @@ export default {
       if( !cancelled ){
         await this._updateRunEventsFromStore()
       }
-      this.starterModalActive = false;
+      this.showSelectStarter = false;
     }
   }
 }
