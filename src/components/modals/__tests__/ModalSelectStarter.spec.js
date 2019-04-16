@@ -142,9 +142,8 @@ describe('ModalSelectStarter', function () {
       species,
       level,
       source: {
-        location: false,
-        event: true,
-        identifier: 'starter'
+        type: 'event',
+        id: 'starter'
       },
       outcome: {
         captured: true,
