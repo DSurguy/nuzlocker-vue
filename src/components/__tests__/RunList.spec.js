@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils'
+import { mount, shallowMount, createLocalVue } from '@vue/test-utils'
 import RunList from '../RunList.vue'
 import CreateRunModal from '../modals/CreateRunModal.vue'
 import flush from 'flush-promises'
@@ -55,11 +55,17 @@ describe('RunList', () => {
           path: '/runs', 
           method: 'get', 
           response: {
-            data: []
+            data: [{id: 0, name: 'test', game: 'red'}]
           }
         }
       ])
-      wrapper = mount(RunList, {
+      wrapper = shallowMount(RunList, {
+        localVue: createLocalVue(),
+        mocks: {
+          $router: {
+            push: jest.fn()
+          }
+        },
         stubs: {
           CreateRunModal: true
         }
@@ -139,6 +145,17 @@ describe('RunList', () => {
       ).toBe(true)
     })
 
+    it('Load the correct route when a run is selected', async (done) => {
+      wrapper
+      .find('[test-label=run][test-key="0"]')
+      .trigger('click')
+      
+      await flush()
+      expect(
+        wrapper.vm.$router.push
+      ).toHaveBeenCalledWith('/runs/0')
+      done()
+    })
   })
 
   describe('Data Retrieval', function () {

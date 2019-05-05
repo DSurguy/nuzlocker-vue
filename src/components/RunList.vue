@@ -23,6 +23,8 @@
         v-for="run in runs" 
         :key="run.id"
         test-label="run"
+        v-bind:test-key="run.id"
+        v-on:click="onRunClick(run.id)"
       >
         <h2><span test-label="runName">{{run.name}}</span></h2>
         <p>Game: <span test-label="runGame">{{translateGame(run.game)}}</span></p>
@@ -72,6 +74,9 @@ export default {
     },
     onCreateRunModalClose: function (){
       this.createRunActive = false
+    },
+    onRunClick: function (runId){
+      this.$router.push(`/runs/${runId}`)
     }
   }
 }
@@ -99,6 +104,7 @@ export default {
   border-radius: 4px;
   margin: 10px 0;
   padding: 5px 20px;
+  cursor: pointer;
 }
 .run h2 {
   font-size: 20px;
