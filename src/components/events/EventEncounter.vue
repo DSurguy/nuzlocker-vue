@@ -59,11 +59,7 @@ export default {
       captureIcon: iconPokeball
     }
   },
-  methods: {
-    getSourceIcon(){
-      
-    }
-  },
+  methods: {},
   computed: {
     iconClass: function (){
       const classes = {
