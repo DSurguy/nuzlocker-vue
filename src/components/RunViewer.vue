@@ -43,6 +43,11 @@
       v-bind:run="run"
       v-bind:onComplete="onSelectStarterComplete"
     />
+    <div class="runControls">
+      <div class="encounters button is-light">Encounters</div>
+      <div class="goals button is-light">Goals</div>
+      <div class="manage button is-light">Manage Run</div>
+    </div>
   </div>
 </template>
 
@@ -153,5 +158,19 @@ export default {
   width: 100%;
   display: flex;
   justify-content: center;
+}
+.runControls {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px 0;
+  background-color: var(--var-color-grey);
+}
+.runControls > * {
+  margin: 0 8px;
+  width: 120px;
 }
 </style>
