@@ -1,35 +1,40 @@
 <template>
-  <div class="event-encounter bg-pokemon-red">
-    <div class="event-encounter-header">
-      <div class="event-icon">
-        <i class="fas fa-exclamation"></i>
-      </div>
-      <h3 class="source">{{sourceName}}</h3>
-      <div class="header-fade"></div>
+  <div class="event-encounter">
+    <div class="event-encounter-label">
+      <p>You {{event.outcome.captured ? 'captured' : 'encountered'}} a pokemon!</p>
     </div>
-    <div class="event-encounter-details">
-      <div class="pokemon-details bg-pokemon-red-dark">
-        <div class="sprite">
-          <div 
-            class="sprite-pokemon"
-            v-bind:class="{[`i-${event.species}`]: true}"
-          ></div>
+    <div class="event-encounter-main bg-pokemon-red">
+      <div class="event-encounter-header">
+        <div class="event-icon">
+          <i v-bind:class="iconClass"></i>
         </div>
-        <div class="species">
-          <span>{{pokemonDetails.name}}</span>
-        </div>
-        <div class="level-details">
-          <span class="level-label">Lv</span>
-          <span class="level-data">{{event.level}}</span>
-        </div>
+        <h3 class="source">{{sourceName}}</h3>
+        <div class="header-fade"></div>
       </div>
-      <div 
-        class="capture-details"
-        v-bind:class="{failed: !event.outcome.captured}"
-      >
-        <img class="sprite" v-bind:src="captureIcon" />
-        <div class="capture-data">
-          <span class="capture-name">{{event.outcome.captured ? event.outcome.name : 'Not Captured'}}</span>  
+      <div class="event-encounter-details">
+        <div class="pokemon-details bg-pokemon-red-dark">
+          <div class="sprite">
+            <div 
+              class="sprite-pokemon"
+              v-bind:class="{[`i-${event.species}`]: true}"
+            ></div>
+          </div>
+          <div class="species">
+            <span>{{pokemonDetails.name}}</span>
+          </div>
+          <div class="level-details">
+            <span class="level-label">Lv</span>
+            <span class="level-data">{{event.level}}</span>
+          </div>
+        </div>
+        <div 
+          class="capture-details"
+          v-bind:class="{failed: !event.outcome.captured}"
+        >
+          <img class="sprite" v-bind:src="captureIcon" />
+          <div class="capture-data">
+            <span class="capture-name">{{event.outcome.captured ? event.outcome.name : 'Not Captured'}}</span>  
+          </div>
         </div>
       </div>
     </div>
@@ -54,7 +59,23 @@ export default {
       captureIcon: iconPokeball
     }
   },
-  methods: {}
+  methods: {
+    getSourceIcon(){
+      
+    }
+  },
+  computed: {
+    iconClass: function (){
+      const classes = {
+        'fas': true
+      }
+      switch(this.event.source.type){
+        case 'event': classes['fa-exclamation'] = true; break;
+        case 'location': classes['fa-spa'] = true; break;
+      }
+      return classes;
+    }
+  }
 }
 
 </script>
@@ -62,10 +83,23 @@ export default {
 <style scoped>
 .event-encounter {
   border-radius: 8px;
-  border: 1px solid var(--var-pokemon-red-dark);
   width: 400px;
-  height: 84px;
+  height: 110px;
   overflow: hidden;
+  background-color: var(--var-color-white-ter);
+}
+.event-encounter-label {
+  padding-right: 8px;
+  line-height: 20px;
+  height: 32px;
+  color: var(--var-color-grey);
+  text-align: right;
+}
+.event-encounter-main {
+  margin-top: -8px;
+  border-radius: 8px;
+  border: 1px solid var(--var-pokemon-red-dark);
+  box-sizing: border-box;
 }
 .event-encounter-header {
   display: block;
