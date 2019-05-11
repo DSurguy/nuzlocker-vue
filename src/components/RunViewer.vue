@@ -115,8 +115,8 @@ export default {
     onSelectStarterComplete: async function (cancelled=false){
       if( !cancelled ){
         await this._updateRunEventsFromStore()
+        this.showSelectStarter = false;
       }
-      this.showSelectStarter = false;
       this.starterModalActive = false;
     }
   }
