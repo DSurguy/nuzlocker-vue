@@ -8,7 +8,7 @@
  *   - These should be components. Obvs.
  */
 import { shallowMount } from '@vue/test-utils'
-import RunViewer from '../RunViewer.vue'
+import RunViewer, { subMenuActions } from '../RunViewer.vue'
 import flush from 'flush-promises'
 import EventRunStart from '../events/EventRunStart.vue'
 import ModalSelectStarter from '../modals/ModalSelectStarter.vue'
@@ -182,6 +182,86 @@ describe('RunViewer', () => {
         .find(ModalSelectStarter)
         .exists()
       ).toBe(true)
+
+      done()
+    })
+  })
+
+  describe('Main Menu', () => {
+    it('Display a button for each menu category', async function (done) {
+      configureRequests_startedRun()
+
+      const wrapper = shallowMount_runOne()
+      
+      await flush()
+
+      const categories = wrapper.vm.$data.menuCategories
+      for( let category of categories ){
+        expect(
+          wrapper
+          .find(`[test-label=${category}Button]`)
+          .exists()
+        ).toBe(true)
+      }
+
+      done()
+    })
+
+    it('Create submenu buttons for each action in each menu category when clicked', async function (done){
+      configureRequests_startedRun()
+
+      const wrapper = shallowMount_runOne()
+      
+      await flush()
+
+      const categories = wrapper.vm.$data.menuCategories
+      for( let category of categories ){
+        wrapper
+        .find(`[test-label=${category}Button]`)
+        .trigger('click')
+
+        await flush()
+
+        const subMenuActions = wrapper.vm.$data.subMenuActions
+        for( let subAction of subMenuActions ){
+          expect(
+            wrapper
+            .find(`[test-label=${subAction.action}SubButton]`)
+            .exists()
+          ).toBe(true)
+        }
+      }
+
+      done()
+    })
+
+    it('Close the submenu when background is clicked', async function (done) {
+      configureRequests_startedRun()
+
+      const wrapper = shallowMount_runOne()
+      
+      await flush()
+
+      const category = wrapper.vm.$data.menuCategories[0]
+      wrapper
+      .find(`[test-label=${category}Button]`)
+      .trigger('click')
+
+      await flush()
+      
+      wrapper
+      .find(`[test-label=subMenuBackground]`)
+      .trigger('click')
+
+      await flush()
+
+      expect(
+        wrapper
+        .find(`[test-label=subMenuBackground]`)
+        .element
+        .style
+        .display
+      ).toBe('none')
 
       done()
     })

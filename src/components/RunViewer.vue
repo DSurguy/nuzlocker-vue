@@ -49,6 +49,7 @@
           v-for="(button, index) in subMenuActions"
           :key="index"
           class="sub-button button is-dark"
+          :test-label="button.action+'SubButton'"
         >
           <div class="sub-button-icon">
             <i class="fas" :class="[subMenuActions[index].icon]"></i>
@@ -60,45 +61,19 @@
       </div>
       <div class="main-menu">
         <div 
+          v-for="(menuCategory) in menuCategories"
+          :key="menuCategory"
           class="main-button-container"
-          :class="{'active': activeSubMenu === 'encounters'}"
+          :class="{'active': activeSubMenu === menuCategory}"
         >
           <button 
-            class="encounters button main-button"
-            :class="[activeSubMenu === 'encounters' ? 'is-dark' : 'is-light']"
-            :disabled="activeSubMenu === 'encounters'"
-            v-on:click="onMenuButtonClick('encounters')"
-            text-label="encountersButton"
+            class="button main-button"
+            :class="[activeSubMenu === menuCategory ? 'is-dark' : 'is-light', menuCategory]"
+            :disabled="activeSubMenu === menuCategory"
+            :test-label="menuCategory+'Button'"
+            @click="onMenuButtonClick(menuCategory)"
           >
-            Encounters
-          </button>
-        </div>
-        <div 
-          class="main-button-container"
-          :class="{'active': activeSubMenu === 'goals'}"
-        >
-          <button 
-            class="goals button main-button"
-            :class="[activeSubMenu === 'goals' ? 'is-dark' : 'is-light']"
-            :disabled="activeSubMenu === 'goals'"
-            v-on:click="onMenuButtonClick('goals')"
-            text-label="goalsButton"
-          >
-            Goals
-          </button>
-        </div>
-        <div 
-          class="main-button-container"
-          :class="{'active': activeSubMenu === 'manage'}"
-        >
-          <button 
-            class="manage button main-button"
-            :class="[activeSubMenu === 'manage' ? 'is-dark' : 'is-light']"
-            :disabled="activeSubMenu === 'manage'"
-            v-on:click="onMenuButtonClick('manage')"
-            text-label="manageButton"
-          >
-            Manage Run
+            {{menuCategory[0].toUpperCase() + menuCategory.substr(1)}}
           </button>
         </div>
       </div>
@@ -107,6 +82,7 @@
       class="sub-menu-background" 
       v-show="showSubMenu"
       v-on:click="closeSubMenu"
+      test-label="subMenuBackground"
     ></div>
   </div>
 </template>
@@ -119,9 +95,30 @@ import ModalSelectStarter from './modals/ModalSelectStarter.vue'
 
 import safeGet from '../utils/safeGet.js'
 
-const eventTypeMapping = {
+/**
+ * Declare some non-reactive data and export it
+ *  so we can use it in test if need be
+ */
+export const eventTypeMapping = {
   'run-start': EventRunStart,
   'encounter': EventEncounter
+}
+
+export const subMenuActions = {
+  'encounters': [
+    { icon: 'fa-leaf', text: 'Field', action: "encounterField" },
+    { icon: 'fa-exclamation', text: 'Event', action: "encounterEvent" },
+    { icon: 'fa-list', text: 'Stats', action: "encounterStats" }
+  ],
+  'goals': [
+    { icon: 'fa-gem', text: 'Update Goals', action: "goalsUpdate" },
+    { icon: 'fa-list-alt', text: 'Static View', action: "goalsStaticView" }
+  ],
+  'manage': [
+    { icon: 'fa-database', text: 'PokeDex', action: "managePokeDex" },
+    { icon: 'fa-map-marked-alt', text: 'RouteDex', action: "manageRouteDex" },
+    { icon: 'fa-wrench', text: 'Edit Status', action: "manageEditStatus" }
+  ]
 }
 
 export default {
@@ -147,7 +144,8 @@ export default {
       starterModalActive: false,
       activeSubMenu: false,
       showSubMenu: false,
-      subMenuActions: []
+      subMenuActions: [],
+      menuCategories: ['encounters', 'goals', 'manage']
     }
   },
   mounted: async function () {
@@ -188,28 +186,7 @@ export default {
       this.starterModalActive = false;
     },
     onMenuButtonClick: function (menuCategory){
-      switch(menuCategory){
-        case 'encounters':
-          this.subMenuActions = [
-            { icon: 'fa-leaf', text: 'Field', action: "encounterField" },
-            { icon: 'fa-exclamation', text: 'Event', action: "encounterEvent" },
-            { icon: 'fa-list', text: 'Stats', action: "encounterStats" }
-          ]
-        break;
-        case 'goals':
-          this.subMenuActions = [
-            { icon: 'fa-gem', text: 'Update Goals', action: "goalsUpdate" },
-            { icon: 'fa-list-alt', text: 'Static View', action: "goalsStaticView" }
-          ]
-        break;
-        case 'manage':
-          this.subMenuActions = [
-            { icon: 'fa-database', text: 'PokeDex', action: "managePokeDex" },
-            { icon: 'fa-map-marked-alt', text: 'RouteDex', action: "manageRouteDex" },
-            { icon: 'fa-wrench', text: 'Edit Status', action: "manageEditStatus" }
-          ]
-        break;
-      }
+      this.subMenuActions = subMenuActions[menuCategory]
       this.activeSubMenu = menuCategory;
       this.showSubMenu = true;
     },
