@@ -254,7 +254,7 @@ export default {
 }
 .run-controls {
   position: fixed;
-  z-index: 500;
+  z-index: 39;
   bottom: 0;
   left: 0;
   right: 0;
@@ -312,7 +312,7 @@ export default {
   display: block;
 }
 .sub-menu-background {
-  z-index: 400;
+  z-index: 31;
   background: rgba(255,255,255,0.5);
   position: fixed;
   top: 0;
