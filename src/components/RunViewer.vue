@@ -45,8 +45,9 @@
     />
     <ModalEncounter
       v-if="encounterModalActive"
-      v-bind:run="run"
-      v-bind:onComplete="onEncounterComplete"
+      :run="run"
+      :onComplete="onEncounterComplete"
+      :encounterType="encounterType"
     />
     <div class="run-controls">
       <div class="sub-menu" v-show="showSubMenu">
@@ -208,9 +209,13 @@ export default {
     onSubMenuButtonClick: function (action) {
       switch(action){
         case 'encounterField':
-        case 'encounterEvent':
+          this.encounterType = "field";
           this.encounterModalActive = true; 
-        break;
+          break;
+        case 'encounterEvent':
+          this.encounterType = "event";
+          this.encounterModalActive = true; 
+          break;
       }
     },
     closeSubMenu: function (){

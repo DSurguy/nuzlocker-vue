@@ -27,7 +27,7 @@ export function gameIntroText(gameId){
 }
 
 const memo_getEncounterSourceByGame = {}
-export function getEncounterSourceByGame(gameId, type='location', source){
+export function getEncounterSourceByGame(gameId, type='field', source){
   let cachedResponse = safeGet(memo_getEncounterSourceByGame, `${gameId}.${type}.${source}`)
   if( cachedResponse ) return cachedResponse
 
@@ -42,4 +42,29 @@ export function getEncounterSourceByGame(gameId, type='location', source){
   )
 
   return result
+}
+
+const memo_getEncounterSourceListByGame = {}
+export function getEncounterSourceListByGame(gameId, type) {
+  let cachedResponse = safeGet(memo_getEncounterSourceListByGame, `${gameId}.${type}`)
+  if( cachedResponse ) return cachedResponse
+
+  const generation = safeGet(games, `byId.${gameId}.generation`)
+  if( generation === undefined ) return []
+
+  let sourceList = safeGet(encounterSources, `byGeneration.${generation}.${type}`)
+  if( !sourceList ) return []
+  sourceList = Object.keys(sourceList).map(sourceId => {
+    return {
+      id: sourceId,
+      name: sourceList[sourceId]
+    }
+  })
+  safeSet(
+    memo_getEncounterSourceListByGame, 
+    `${gameId}.${type}`, 
+    sourceList
+  )
+
+  return sourceList
 }

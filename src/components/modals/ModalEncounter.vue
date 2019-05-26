@@ -3,36 +3,41 @@
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head">
-        <p class="modal-card-title">Select Starting Pokemon</p>
+        <p class="modal-card-title">New Encounter</p>
       </header>
       <section class="modal-card-body">
         <form>
-          <div>
-            <div class="select">
-              <select 
-                v-model="form.fields.species"
-                test-label="formFieldSpecies"
-                v-on:change="onSpeciesChange"
-              >
-                <option 
-                  v-for="pokemon in pokemonList" 
-                  v-bind:key="pokemon.id"
-                  v-bind:value="pokemon.id"
-                >{{pokemon.id}} - {{pokemon.name}}</option>
-              </select>
+          <div class="horizontal-field-set">
+            <div class="field" strict-portion="60">
+              <label class="label">Species</label>
+              <div class="control">
+                <div class="select full-width">
+                  <select 
+                    v-model="form.fields.species"
+                    test-label="formFieldSpecies"
+                    v-on:change="onSpeciesChange"
+                  >
+                    <option 
+                      v-for="pokemon in pokemonList" 
+                      v-bind:key="pokemon.id"
+                      v-bind:value="pokemon.id"
+                    >{{pokemon.id}} - {{pokemon.name}}</option>
+                  </select>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="field">
-            <label class="label">Level</label>
-            <div class="control">
-              <input 
-                class="input" 
-                type="number"  
-                v-model="form.fields.level"
-                ref="form-level"
-                v-on:input="onLevelChange"
-                test-label="formFieldLevel"
-              >
+            <div class="field" portion="20">
+              <label class="label">Level</label>
+              <div class="control">
+                <input 
+                  class="input" 
+                  type="number"  
+                  v-model="form.fields.level"
+                  ref="form-level"
+                  v-on:input="onLevelChange"
+                  test-label="formFieldLevel"
+                >
+              </div>
             </div>
           </div>
           <div class="field">
@@ -47,6 +52,24 @@
                 v-on:input="onNameChange"
                 test-label="formFieldName"
               >
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">{{ encounterType === 'field' ? 'Location': 'Event' }}</label>
+            <div class="control">
+              <div class="select full-width">
+                <select 
+                  v-model="form.fields.source"
+                  test-label="formFieldSource"
+                  v-on:change="onSourceChange"
+                >
+                  <option 
+                    v-for="source in sourceList" 
+                    v-bind:key="source.id"
+                    v-bind:value="source.id"
+                  >{{source.name}}</option>
+                </select>
+              </div>
             </div>
           </div>
           <div class="notification is-warning" v-if="hasWarning" test-label="warning">
@@ -86,7 +109,7 @@
 </template>
 
 <script>
-import { getPokemonByGame } from '../../utils/dataHelpers.js'
+import { getPokemonByGame, getEncounterSourceListByGame } from '../../utils/dataHelpers.js'
 import { request } from '../../services/api/index.js'
 import isDefined from '../../utils/isDefined.js'
 
@@ -95,16 +118,19 @@ export default {
   components: {},
   props: {
     run: Object,
+    encounterType: String,
     onComplete: Function
   },
   data: function () {
     return {
       pokemonList: getPokemonByGame(this.run.game),
+      sourceList: getEncounterSourceListByGame(this.run.game, this.encounterType).sort(),
       form: {
         fields: {
           name: "",
           species: 1,
-          level: 5
+          level: 5,
+          source: 0
         }
       },
       hasWarning: false,
@@ -129,6 +155,7 @@ export default {
           this.hasWarning = false
       }
     },
+    onSourceChange: function (){},
     onSubmit: async function (){
       const requiredFields = [
         'name',
@@ -153,8 +180,8 @@ export default {
             species: this.form.fields.species,
             level: this.form.fields.level,
             source: {
-              type: 'event',
-              id: 'starter'
+              type: this.encounterType,
+              id: this.form.fields.source
             },
             outcome: {
               captured: true,
@@ -176,5 +203,26 @@ export default {
 </script>
 
 <style scoped>
-
+.horizontal-field-set {
+  display: flex;
+  justify-content: flex-start;
+}
+.horizontal-field-set .field {
+  margin-right: 1em;
+}
+.horizontal-field-set .field:last-child {
+  margin-right: 0;
+}
+.horizontal-field-set .field[strict-portion="80"]{
+  width: 80%;
+}
+.horizontal-field-set .field[portion="20"] {
+  max-width: 20%;
+}
+.select.full-width {
+  width: 100%;
+}
+.select.full-width select{
+  width: 100%;
+}
 </style>

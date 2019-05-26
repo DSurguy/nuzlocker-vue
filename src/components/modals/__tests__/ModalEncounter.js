@@ -5,21 +5,37 @@ import { request, configureRequests } from '../../../services/api/index.js'
 
 const onComplete = jest.fn()
 
+const shallowMount_field = () => {
+  return shallowMount(ModalEncounter, {
+    propsData: {
+      onComplete,
+      encounterType: 'field',
+      run: {
+        id: 0,
+        game: 'red'
+      }
+    }
+  })
+}
+
+const shallowMount_event = () => {
+  return shallowMount(ModalEncounter, {
+    propsData: {
+      onComplete,
+      encounterType: 'event',
+      run: {
+        id: 0,
+        game: 'red'
+      }
+    }
+  })
+}
+
 describe('ModalEncounter', function () {
   let wrapper
-  beforeEach(() => {
-    wrapper = shallowMount(ModalEncounter, {
-      propsData: {
-        onComplete,
-        run: {
-          id: 0,
-          game: 'red'
-        }
-      }
-    })
-  })
 
   it('Trigger a warning for each required field onSubmit', async function () {
+    wrapper = shallowMount_event()
     wrapper.setData({
       form: {
         fields: {
@@ -40,6 +56,7 @@ describe('ModalEncounter', function () {
   })
 
   it('Hide warning on name when name field is updated', async function (done) {
+    wrapper = shallowMount_event()
     wrapper.setData({
       hasWarning: true,
       warningFields: ['name'],
@@ -63,6 +80,7 @@ describe('ModalEncounter', function () {
   })
 
   it('Hide warning on level when level field is updated', async function (done) {
+    wrapper = shallowMount_event()
     wrapper.setData({
       hasWarning: true,
       warningFields: ['level'],
@@ -86,6 +104,7 @@ describe('ModalEncounter', function () {
   })
 
   it('Show any errors returned from post', async function (done) {
+    wrapper = shallowMount_event()
     configureRequests([
       {
         path: '/runs/0/events', 
@@ -120,7 +139,8 @@ describe('ModalEncounter', function () {
     done()
   })
 
-  it('Post a new event with the expected data from form', async function (done) {
+  it('Post a new field encounter event with the expected data from form', async function (done) {
+    wrapper = shallowMount_field()
     configureRequests([
       {
         path: '/runs/0/events', 
@@ -135,14 +155,16 @@ describe('ModalEncounter', function () {
     const species = 4
     const level = 5
     const name = 'potatoFace'
+    const source = 0
+    const type = 'field'
 
     const expectedData = {
       type: 'encounter',
       species,
       level,
       source: {
-        type: 'event',
-        id: 'starter'
+        type,
+        id: 0
       },
       outcome: {
         captured: true,
@@ -155,7 +177,65 @@ describe('ModalEncounter', function () {
         fields: {
           name,
           level,
-          species
+          species,
+          source
+        }
+      }
+    })
+
+    await wrapper.vm.onSubmit()
+
+    expect(
+      request.mock.calls[0]
+    ).toEqual([
+      `/runs/0/events`,
+      'post',
+      expectedData
+    ])
+
+    done()
+  })
+
+  it('Post a new event encounter event with the expected data from form', async function (done) {
+    wrapper = shallowMount_event()
+    configureRequests([
+      {
+        path: '/runs/0/events', 
+        method: 'post', 
+        response: {
+          data: {} //the return data is not used
+        }
+      }
+    ])
+    request.mockClear()
+
+    const species = 4
+    const level = 5
+    const name = 'potatoFace'
+    const source = 0
+    const type = 'event'
+
+    const expectedData = {
+      type: 'encounter',
+      species,
+      level,
+      source: {
+        type,
+        id: 0
+      },
+      outcome: {
+        captured: true,
+        name,
+      }
+    }
+
+    wrapper.setData({
+      form: {
+        fields: {
+          name,
+          level,
+          species,
+          source
         }
       }
     })
