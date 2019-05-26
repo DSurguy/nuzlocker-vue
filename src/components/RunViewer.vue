@@ -43,6 +43,11 @@
       v-bind:run="run"
       v-bind:onComplete="onSelectStarterComplete"
     />
+    <ModalEncounter
+      v-if="encounterModalActive"
+      v-bind:run="run"
+      v-bind:onComplete="onEncounterComplete"
+    />
     <div class="run-controls">
       <div class="sub-menu" v-show="showSubMenu">
         <button 
@@ -50,6 +55,7 @@
           :key="index"
           class="sub-button button is-dark"
           :test-label="button.action+'SubButton'"
+          @click="onSubMenuButtonClick(button.action)"
         >
           <div class="sub-button-icon">
             <i class="fas" :class="[subMenuActions[index].icon]"></i>
@@ -92,6 +98,7 @@ import { request } from '../services/api/index.js'
 import EventRunStart from './events/EventRunStart.vue'
 import EventEncounter from './events/EventEncounter.vue'
 import ModalSelectStarter from './modals/ModalSelectStarter.vue'
+import ModalEncounter from './modals/ModalEncounter.vue'
 
 import safeGet from '../utils/safeGet.js'
 
@@ -125,7 +132,8 @@ export default {
   name: 'RunViewer',
   components: {
     EventRunStart,
-    ModalSelectStarter
+    ModalSelectStarter,
+    ModalEncounter
   },
   props: {},
   data: function (){
@@ -142,6 +150,7 @@ export default {
       error: null,
       showSelectStarter: false,
       starterModalActive: false,
+      encounterModalActive: false,
       activeSubMenu: false,
       showSubMenu: false,
       subMenuActions: [],
@@ -185,10 +194,24 @@ export default {
       }
       this.starterModalActive = false;
     },
+    onEncounterComplete: async function (cancelled=false){
+      if( !cancelled ){
+        await this._updateRunEventsFromStore()
+      }
+      this.encounterModalActive = false;
+    },
     onMenuButtonClick: function (menuCategory){
       this.subMenuActions = subMenuActions[menuCategory]
       this.activeSubMenu = menuCategory;
       this.showSubMenu = true;
+    },
+    onSubMenuButtonClick: function (action) {
+      switch(action){
+        case 'encounterField':
+        case 'encounterEvent':
+          this.encounterModalActive = true; 
+        break;
+      }
     },
     closeSubMenu: function (){
       this.showSubMenu = false;

@@ -12,6 +12,7 @@ import RunViewer, { subMenuActions } from '../RunViewer.vue'
 import flush from 'flush-promises'
 import EventRunStart from '../events/EventRunStart.vue'
 import ModalSelectStarter from '../modals/ModalSelectStarter.vue'
+import ModalEncounter from '../modals/ModalEncounter.vue'
 
 jest.mock('../../services/api/index.js')
 import { configureRequests } from '../../services/api/index.js'
@@ -262,6 +263,65 @@ describe('RunViewer', () => {
         .style
         .display
       ).toBe('none')
+
+      done()
+    })
+
+    /**
+     * Specific Action Handlers
+     */
+    it('Open the encounter modal when field encounter is clicked', async function (done){
+      configureRequests_startedRun()
+
+      const wrapper = shallowMount_runOne()
+      
+      await flush()
+      
+      wrapper
+      .find(`[test-label=encountersButton]`)
+      .trigger('click')
+
+      await flush()
+      
+      wrapper
+      .find(`[test-label=encounterFieldSubButton]`)
+      .trigger('click')
+
+      await flush()
+
+      expect(
+        wrapper
+        .find(ModalEncounter)
+        .exists()
+      ).toBe(true)
+
+      done()
+    })
+
+    it('Open the encounter modal when event encounter is clicked', async function (done){
+      configureRequests_startedRun()
+
+      const wrapper = shallowMount_runOne()
+      
+      await flush()
+      
+      wrapper
+      .find(`[test-label=encountersButton]`)
+      .trigger('click')
+
+      await flush()
+      
+      wrapper
+      .find(`[test-label=encounterEventSubButton]`)
+      .trigger('click')
+
+      await flush()
+
+      expect(
+        wrapper
+        .find(ModalEncounter)
+        .exists()
+      ).toBe(true)
 
       done()
     })
