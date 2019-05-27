@@ -119,6 +119,9 @@ export default {
   props: {
     run: Object,
     encounterType: String,
+    encounterSource: String,
+    encounterLevel: String,
+    encounterSpecies: String,
     onComplete: Function
   },
   data: function () {

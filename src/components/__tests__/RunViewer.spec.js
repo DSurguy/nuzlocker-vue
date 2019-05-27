@@ -8,10 +8,9 @@
  *   - These should be components. Obvs.
  */
 import { shallowMount } from '@vue/test-utils'
-import RunViewer, { subMenuActions } from '../RunViewer.vue'
+import RunViewer, { subMenuActions } from '../RunViewer.vue' //TODO: Actually use
 import flush from 'flush-promises'
 import EventRunStart from '../events/EventRunStart.vue'
-import ModalSelectStarter from '../modals/ModalSelectStarter.vue'
 import ModalEncounter from '../modals/ModalEncounter.vue'
 
 jest.mock('../../services/api/index.js')
@@ -39,6 +38,48 @@ const configureRequests_startedRun = () => {
       response: {
         data: [
           { id: 0, type: 'run-start'}
+        ]
+      }
+    }
+  ])
+}
+
+const configureRequests_newEvent = () => {
+  configureRequests([
+    {
+      path: '/runs/1',
+      method: 'get',
+      response: {
+        data: {
+          id: 1,
+          name: 'testytest',
+          game: 'red',
+          data: {
+            status: 'good'
+          }
+        }
+      }
+    },
+    {
+      path: '/runs/1/events',
+      method: 'get',
+      response: {
+        data: [
+          { id: 0, type: 'run-start'},
+          { 
+            "id":1, 
+            "type":"encounter",
+            "species":1,
+            "level":5,
+            "source":{ 
+              "type":"event",
+              "id":"starter"
+            },
+            "outcome":{
+              "captured":true,
+              "name":"hmmmmm"
+            }
+          }
         ]
       }
     }
@@ -170,19 +211,44 @@ describe('RunViewer', () => {
       done()
     })
 
-    it('Set select starter modal active when onSelectStarterClick is called', async function (done) {
-      configureRequests_startedRun()
+  })
 
+  describe('General Interaction', () => {
+    it('Remove the starter button after creating the first encounter', async function (done) {
+      //Fresh component, only 'run-start' should exist on mount
+      configureRequests_startedRun()
       const wrapper = shallowMount_runOne()
-      wrapper.vm.onSelectStarterClick()
+      await flush()
       
+      //Reset requests and simulate a new event having been added
+      configureRequests_newEvent()
+      await wrapper.vm.onEncounterComplete()
       await flush()
 
       expect(
         wrapper
-        .find(ModalSelectStarter)
+        .find(`[test-label=selectStarterButton]`)
         .exists()
-      ).toBe(true)
+      ).toBe(false)
+
+      done()
+    })
+
+    it('Display a configured encounter modal when the starter button is clicked', async function (done) {
+      configureRequests_startedRun()
+      const wrapper = shallowMount_runOne()
+      await flush()
+      
+      wrapper
+      .find(`[test-label=selectStarterButton]`)
+      .trigger('click')
+
+      await flush()
+
+      const modal = wrapper.find(ModalEncounter)
+
+      expect( modal.props('encounterType') ).toBe('event')
+      expect( modal.props('encounterSource') ).toBe('starter')
 
       done()
     })
@@ -319,11 +385,8 @@ describe('RunViewer', () => {
 
       await flush()
 
-      expect(
-        wrapper
-        .find(ModalEncounter)
-        .exists()
-      ).toBe(true)
+      const modal = wrapper.find(ModalEncounter)
+      expect( modal.props('encounterType') ).toBe('field')
 
       done()
     })
@@ -347,11 +410,8 @@ describe('RunViewer', () => {
 
       await flush()
 
-      expect(
-        wrapper
-        .find(ModalEncounter)
-        .exists()
-      ).toBe(true)
+      const modal = wrapper.find(ModalEncounter)
+      expect( modal.props('encounterType') ).toBe('event')
 
       done()
     })

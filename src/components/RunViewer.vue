@@ -21,33 +21,31 @@
         <div 
           class="event"
           v-for="event in runEvents"
-          v-bind:key="event.id"
+          :key="event.id"
         >
           <component 
-            v-bind:is="event.component" 
-            v-bind:run="run"
-            v-bind:event="event"
+            :is="event.component" 
+            :run="run"
+            :event="event"
           ></component>
         </div>
         <div class="prompt" v-if="showSelectStarter">
           <button 
             class="button is-light is-outlined"
-            v-on:click="onSelectStarterClick"
+            @click="onSelectStarterClick"
             test-label="selectStarterButton"
           >Select your starter!</button>
         </div>
       </div>
     </div>
-    <ModalSelectStarter
-      v-if="starterModalActive"
-      v-bind:run="run"
-      v-bind:onComplete="onSelectStarterComplete"
-    />
     <ModalEncounter
       v-if="encounterModalActive"
       :run="run"
       :onComplete="onEncounterComplete"
-      :encounterType="encounterType"
+      :encounterType="encounterModal.type"
+      :encounterSource="encounterModal.source"
+      :encounterLevel="encounterModal.level"
+      :encounterSpecies="encounterModal.species"
     />
     <div class="run-controls">
       <div class="sub-menu" v-show="showSubMenu" test-label="subMenu">
@@ -88,7 +86,7 @@
     <div 
       class="sub-menu-background" 
       v-show="showSubMenu"
-      v-on:click="closeSubMenu"
+      @click="closeSubMenu"
       test-label="subMenuBackground"
     ></div>
   </div>
@@ -98,7 +96,6 @@
 import { request } from '../services/api/index.js'
 import EventRunStart from './events/EventRunStart.vue'
 import EventEncounter from './events/EventEncounter.vue'
-import ModalSelectStarter from './modals/ModalSelectStarter.vue'
 import ModalEncounter from './modals/ModalEncounter.vue'
 
 import safeGet from '../utils/safeGet.js'
@@ -133,7 +130,6 @@ export default {
   name: 'RunViewer',
   components: {
     EventRunStart,
-    ModalSelectStarter,
     ModalEncounter
   },
   props: {},
@@ -155,7 +151,13 @@ export default {
       activeSubMenu: false,
       showSubMenu: false,
       subMenuActions: [],
-      menuCategories: ['encounters', 'goals', 'manage']
+      menuCategories: ['encounters', 'goals', 'manage'],
+      encounterModal: {
+        type: null,
+        source: null,
+        level: null,
+        species: null
+      }
     }
   },
   mounted: async function () {
@@ -184,22 +186,27 @@ export default {
       if( safeGet(this.runEvents.slice(-1)[0], 'type') === 'run-start' ){
         this.showSelectStarter = true;
       }
-    },
-    onSelectStarterClick: function (){
-      this.starterModalActive = true
-    },
-    onSelectStarterComplete: async function (cancelled=false){
-      if( !cancelled ){
-        await this._updateRunEventsFromStore()
+      else{
         this.showSelectStarter = false;
       }
-      this.starterModalActive = false;
+    },
+    onSelectStarterClick: function (){
+      //Pre-load some data for the encounter modal
+      this.encounterModal.type = 'event';
+      this.encounterModal.source = 'starter';
+      this.encounterModalActive = true
     },
     onEncounterComplete: async function (cancelled=false){
       if( !cancelled ){
         await this._updateRunEventsFromStore()
       }
       this.encounterModalActive = false;
+      this.encounterModal = {
+        type: null,
+        source: null,
+        level: null,
+        species: null
+      }
     },
     onMenuButtonClick: function (menuCategory){
       this.subMenuActions = subMenuActions[menuCategory]
@@ -209,11 +216,11 @@ export default {
     onSubMenuButtonClick: function (action) {
       switch(action){
         case 'encounterField':
-          this.encounterType = "field";
+          this.encounterModal.type = "field";
           this.encounterModalActive = true; 
           break;
         case 'encounterEvent':
-          this.encounterType = "event";
+          this.encounterModal.type = "event";
           this.encounterModalActive = true; 
           break;
       }
