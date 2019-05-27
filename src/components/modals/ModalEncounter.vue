@@ -15,12 +15,12 @@
                   <select 
                     v-model="form.fields.species"
                     test-label="formFieldSpecies"
-                    v-on:change="onSpeciesChange"
+                    @change="onFieldChange('species')"
                   >
                     <option 
                       v-for="pokemon in pokemonList" 
-                      v-bind:key="pokemon.id"
-                      v-bind:value="pokemon.id"
+                      :key="pokemon.id"
+                      :value="pokemon.id"
                     >{{pokemon.id}} - {{pokemon.name}}</option>
                   </select>
                 </div>
@@ -34,7 +34,7 @@
                   type="number"  
                   v-model="form.fields.level"
                   ref="form-level"
-                  v-on:input="onLevelChange"
+                  @change="onFieldChange('level')"
                   test-label="formFieldLevel"
                 >
               </div>
@@ -49,7 +49,7 @@
                 placeholder="Missingno." 
                 v-model="form.fields.name"
                 ref="form-name"
-                v-on:input="onNameChange"
+                @change="onFieldChange('name')"
                 test-label="formFieldName"
               >
             </div>
@@ -61,12 +61,12 @@
                 <select 
                   v-model="form.fields.source"
                   test-label="formFieldSource"
-                  v-on:change="onSourceChange"
+                  @change="onFieldChange('source')"
                 >
                   <option 
                     v-for="source in sourceList" 
-                    v-bind:key="source.id"
-                    v-bind:value="source.id"
+                    :key="source.id"
+                    :value="source.id"
                   >{{source.name}}</option>
                 </select>
               </div>
@@ -75,7 +75,7 @@
           <div class="notification is-warning" v-if="hasWarning" test-label="warning">
             <p>Please fill out the following fields, they're required!</p>
             <ul>
-              <li v-for="field in warningFields" v-bind:key="field" test-label="warningField">- {{field}}</li>
+              <li v-for="field in warningFields" :key="field" test-label="warningField">- {{field}}</li>
             </ul>
           </div>
           <div class="notification is-danger" v-if="hasError" test-label="error">
@@ -131,9 +131,9 @@ export default {
       form: {
         fields: {
           name: "",
-          species: 1,
-          level: 5,
-          source: 0
+          species: this.encounterSpecies || 1,
+          level: this.encounterLevel || 5,
+          source: this.encounterSource
         }
       },
       hasWarning: false,
@@ -143,26 +143,18 @@ export default {
     }
   },
   methods: {
-    onSpeciesChange: function (){},
-    onNameChange: function (){
-      if( this.form.fields.name !== '' && isDefined(this.form.fields.name) ){
-        this.warningFields = this.warningFields.filter(field => field !== 'name')
+    onFieldChange: function (fieldName){
+      if( this.form.fields[fieldName] !== '' && isDefined(this.form.fields[fieldName]) ){
+        this.warningFields = this.warningFields.filter(field => field !== fieldName)
         if( this.warningFields.length === 0 )
           this.hasWarning = false
       }
     },
-    onLevelChange: function (){
-      if( this.form.fields.level !== '' && isDefined(this.form.fields.level) ){
-        this.warningFields = this.warningFields.filter(field => field !== 'level')
-        if( this.warningFields.length === 0 )
-          this.hasWarning = false
-      }
-    },
-    onSourceChange: function (){},
     onSubmit: async function (){
       const requiredFields = [
         'name',
-        'level'
+        'level',
+        'source'
       ]
       let newWarningFields = []
       for( let field of requiredFields ){

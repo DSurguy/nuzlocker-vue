@@ -40,7 +40,8 @@ describe('ModalEncounter', function () {
       form: {
         fields: {
           name: "",
-          level: ""
+          level: "",
+          source: ''
         }
       }
     })
@@ -52,7 +53,7 @@ describe('ModalEncounter', function () {
       .find(`[test-label=warning]`)
       .findAll(`[test-label=warningField]`)
       .length
-    ).toBe(2)
+    ).toBe(3)
   })
 
   it('Hide warning on name when name field is updated', async function (done) {
@@ -63,12 +64,13 @@ describe('ModalEncounter', function () {
       form: {
         fields: {
           name: 'test',
-          level: 14
+          level: 14,
+          source: '1'
         }
       }
     })
 
-    wrapper.vm.onNameChange()
+    wrapper.vm.onFieldChange('name')
 
     expect(
       wrapper
@@ -87,12 +89,38 @@ describe('ModalEncounter', function () {
       form: {
         fields: {
           name: 'test',
-          level: 14
+          level: 14,
+          source: '1'
         }
       }
     })
 
-    wrapper.vm.onLevelChange()
+    wrapper.vm.onFieldChange('level')
+
+    expect(
+      wrapper
+      .find('[test-label=warning]')
+      .exists()
+    ).toBe(false)
+
+    done()
+  })
+
+  it('Hide warning on source when source field is updated', async function (done) {
+    wrapper = shallowMount_event()
+    wrapper.setData({
+      hasWarning: true,
+      warningFields: ['source'],
+      form: {
+        fields: {
+          name: 'test',
+          level: 14,
+          source: '1'
+        }
+      }
+    })
+
+    wrapper.vm.onFieldChange('source')
 
     expect(
       wrapper
@@ -122,7 +150,8 @@ describe('ModalEncounter', function () {
       form: {
         fields: {
           name: "something",
-          level: 5
+          level: 5,
+          source: '1'
         }
       }
     })
