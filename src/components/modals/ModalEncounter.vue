@@ -15,6 +15,7 @@
                   <select 
                     v-model="form.fields.species"
                     test-label="formFieldSpecies"
+                    :disabled="isDefined(encounterSpecies)"
                     @change="onFieldChange('species')"
                   >
                     <option 
@@ -46,6 +47,7 @@
                 type="checkbox" 
                 v-model="form.fields.captured"
                 ref="form-captured"
+                :disabled="isDefined(encounterCaptured)"
                 @change="onFieldChange('captured')"
                 test-label="formFieldCaptured"
               >
@@ -62,7 +64,7 @@
                 v-model="form.fields.name"
                 :disabled="!form.fields.captured"
                 ref="form-name"
-                @change="onFieldChange('name')"
+                @input="onFieldChange('name')"
                 test-label="formFieldName"
               >
             </div>
@@ -74,6 +76,7 @@
                 <select 
                   v-model="form.fields.source"
                   test-label="formFieldSource"
+                  :disabled="isDefined(encounterSource)"
                   @change="onFieldChange('source')"
                 >
                   <option 
@@ -133,8 +136,8 @@ export default {
     run: Object,
     encounterType: String,
     encounterSource: String,
-    encounterLevel: String,
-    encounterSpecies: String,
+    encounterLevel: Number,
+    encounterSpecies: Number,
     encounterCaptured: Boolean,
     onComplete: Function
   },
@@ -169,18 +172,18 @@ export default {
     
   },
   methods: {
-    _updateFieldWarnings: async function (){
+    _updateFieldWarnings: async function (options={}){
       let newWarningFields = []
       for( let field of this.requiredFields ){
         let fieldIsValid
         if( field.validator ) fieldIsValid = field.validator();
         else fieldIsValid = isDefined(this.form.fields[field]) && this.form.fields[field] !== '';
 
-        if( !fieldIsValid ){
+        if( !fieldIsValid){
           newWarningFields.push(field)
         }
       }
-      if( newWarningFields.length ){
+      if( newWarningFields.length && !options.onlyRemove){
         this.hasWarning = true
         this.warningFields = newWarningFields
       }
@@ -189,12 +192,14 @@ export default {
         this.warningFields = []
       }
     },
-    onFieldChange: function (fieldName){
-      this._updateFieldWarnings()
+    onFieldChange: function (){
+      this._updateFieldWarnings({
+        onlyRemove: true
+      })
     },
     onSubmit: async function (){
-      this._updateFieldWarnings()
-      if( !this.hasWarnings ){
+      await this._updateFieldWarnings()
+      if( !this.hasWarning ){
         try{
           await request(`/runs/${this.run.id}/events`, 'post', {
             type: 'encounter',
@@ -218,7 +223,8 @@ export default {
     },
     onClose: function (){
       this.onComplete(true)
-    }
+    },
+    isDefined
   }
 }
 </script>

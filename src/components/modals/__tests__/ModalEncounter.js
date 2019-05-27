@@ -31,6 +31,20 @@ const shallowMount_event = () => {
   })
 }
 
+const shallowMount_eventWithProps = (props) => {
+  return shallowMount(ModalEncounter, {
+    propsData: {
+      onComplete,
+      encounterType: 'event',
+      run: {
+        id: 0,
+        game: 'red'
+      },
+      ...props
+    }
+  })
+}
+
 describe('ModalEncounter', function () {
   let wrapper
 
@@ -274,7 +288,7 @@ describe('ModalEncounter', function () {
     const name = ''
     const source = 0
     const type = 'event'
-    const captured = 'false'
+    const captured = false
 
     const expectedData = {
       type: 'encounter',
@@ -353,5 +367,41 @@ describe('ModalEncounter', function () {
     expect(
       onComplete
     ).toHaveBeenCalledWith(true)
+  })
+
+  it('Disable source when preloaded from props', () => {
+    wrapper = shallowMount_eventWithProps({
+      encounterSource: 'starter'
+    })
+
+    expect(
+      wrapper
+      .find('[test-label=formFieldSource]')
+      .is('[disabled]')
+    ).toBe(true)
+  })
+
+  it('Disable species when preloaded from props', () => {
+    wrapper = shallowMount_eventWithProps({
+      encounterSpecies: 1
+    })
+
+    expect(
+      wrapper
+      .find('[test-label=formFieldSpecies]')
+      .is('[disabled]')
+    ).toBe(true)
+  })
+
+  it('Disable captured when preloaded from props', () => {
+    wrapper = shallowMount_eventWithProps({
+      encounterCaptured: true
+    })
+
+    expect(
+      wrapper
+      .find('[test-label=formFieldCaptured]')
+      .is('[disabled]')
+    ).toBe(true)
   })
 })
