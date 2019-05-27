@@ -267,6 +267,36 @@ describe('RunViewer', () => {
       done()
     })
 
+    it('Close the submenu when an action is clicked', async function (done) {
+      configureRequests_startedRun()
+
+      const wrapper = shallowMount_runOne()
+      
+      await flush()
+      
+      wrapper
+      .find(`[test-label=encountersButton]`)
+      .trigger('click')
+
+      await flush()
+      
+      wrapper
+      .find(`[test-label=encounterFieldSubButton]`)
+      .trigger('click')
+
+      await flush()
+
+      expect(
+        wrapper
+        .find(`[test-label=subMenu]`)
+        .element
+        .style
+        .display
+      ).toBe('none')
+
+      done()
+    })
+
     /**
      * Specific Action Handlers
      */

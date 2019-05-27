@@ -50,7 +50,7 @@
       :encounterType="encounterType"
     />
     <div class="run-controls">
-      <div class="sub-menu" v-show="showSubMenu">
+      <div class="sub-menu" v-show="showSubMenu" test-label="subMenu">
         <button 
           v-for="(button, index) in subMenuActions"
           :key="index"
@@ -217,6 +217,7 @@ export default {
           this.encounterModalActive = true; 
           break;
       }
+      this.closeSubMenu()
     },
     closeSubMenu: function (){
       this.showSubMenu = false;
