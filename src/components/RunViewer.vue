@@ -5,7 +5,7 @@
       <div class="meta-game" test-label="runGame"></div>
       <div class="meta-status" test-label="runStatus"></div>
     </div>
-    <div class="container scrollable">
+    <div class="run-events-container scrollable">
       <div class="notFound" test-label="notFound" v-if="notFound">
         <p>
           The run with id {{$route.params.runId}} was not found.
@@ -232,6 +232,7 @@ export default {
 .run-viewer{
   position: relative;
   padding-top: 64px;
+  padding-bottom: 64px;
   box-sizing: border-box;
 }
 .run-meta {
@@ -244,6 +245,10 @@ export default {
   background-color: var(--var-color-grey-dark);
   color: #fff;
 }
+.run-events-container {
+  height: 100%;
+  overflow-y: scroll;
+}
 .events {
   width: 100%;
 }
@@ -251,6 +256,7 @@ export default {
   width: 100%;
   display: flex;
   justify-content: center;
+  margin-bottom: 2em;
 }
 .prompt {
   width: 100%;
@@ -271,10 +277,10 @@ export default {
   align-items: center;
   background-color: var(--var-color-grey);
   width: 100%;
+  height: 64px;
 }
 .run-controls .main-button-container {
   display: flex;
-  padding: 16px 0;
   justify-content: center;
   align-items: center;
   width: 30%;
