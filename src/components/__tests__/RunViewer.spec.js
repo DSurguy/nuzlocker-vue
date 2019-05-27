@@ -249,6 +249,7 @@ describe('RunViewer', () => {
 
       expect( modal.props('encounterType') ).toBe('event')
       expect( modal.props('encounterSource') ).toBe('starter')
+      expect( modal.props('encounterCaptured') ).toBe(true)
 
       done()
     })

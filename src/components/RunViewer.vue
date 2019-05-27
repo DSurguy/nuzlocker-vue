@@ -46,6 +46,7 @@
       :encounterSource="encounterModal.source"
       :encounterLevel="encounterModal.level"
       :encounterSpecies="encounterModal.species"
+      :encounterCaptured="encounterModal.captured"
     />
     <div class="run-controls">
       <div class="sub-menu" v-show="showSubMenu" test-label="subMenu">
@@ -156,7 +157,8 @@ export default {
         type: null,
         source: null,
         level: null,
-        species: null
+        species: null,
+        captured: null
       }
     }
   },
@@ -194,6 +196,7 @@ export default {
       //Pre-load some data for the encounter modal
       this.encounterModal.type = 'event';
       this.encounterModal.source = 'starter';
+      this.encounterModal.captured = true;
       this.encounterModalActive = true
     },
     onEncounterComplete: async function (cancelled=false){
@@ -205,7 +208,8 @@ export default {
         type: null,
         source: null,
         level: null,
-        species: null
+        species: null,
+        captured: null
       }
     },
     onMenuButtonClick: function (menuCategory){

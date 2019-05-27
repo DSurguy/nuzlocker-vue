@@ -34,14 +34,15 @@ const shallowMount_event = () => {
 describe('ModalEncounter', function () {
   let wrapper
 
-  it('Trigger a warning for each required field onSubmit', async function () {
+  it('Trigger a warning for each required field onSubmit', async function (done) {
     wrapper = shallowMount_event()
     wrapper.setData({
       form: {
         fields: {
           name: "",
           level: "",
-          source: ''
+          source: '',
+          captured: true
         }
       }
     })
@@ -54,6 +55,33 @@ describe('ModalEncounter', function () {
       .findAll(`[test-label=warningField]`)
       .length
     ).toBe(3)
+
+    done()
+  })
+
+  it('Allow empty name when pokemon is not captured', async function (done){
+    wrapper = shallowMount_event()
+    wrapper.setData({
+      form: {
+        fields: {
+          name: "",
+          level: "",
+          source: '',
+          captured: false
+        }
+      }
+    })
+
+    await wrapper.vm.onSubmit()
+
+    expect(
+      wrapper
+      .find(`[test-label=warning]`)
+      .findAll(`[test-label=warningField]`)
+      .length
+    ).toBe(2)
+
+    done()
   })
 
   it('Hide warning on name when name field is updated', async function (done) {
@@ -65,12 +93,13 @@ describe('ModalEncounter', function () {
         fields: {
           name: 'test',
           level: 14,
-          source: '1'
+          source: '1',
+          captured: true
         }
       }
     })
 
-    wrapper.vm.onFieldChange('name')
+    wrapper.vm.onFieldChange()
 
     expect(
       wrapper
@@ -95,7 +124,7 @@ describe('ModalEncounter', function () {
       }
     })
 
-    wrapper.vm.onFieldChange('level')
+    wrapper.vm.onFieldChange()
 
     expect(
       wrapper
@@ -120,7 +149,7 @@ describe('ModalEncounter', function () {
       }
     })
 
-    wrapper.vm.onFieldChange('source')
+    wrapper.vm.onFieldChange()
 
     expect(
       wrapper
@@ -186,6 +215,7 @@ describe('ModalEncounter', function () {
     const name = 'potatoFace'
     const source = 0
     const type = 'field'
+    const captured = true
 
     const expectedData = {
       type: 'encounter',
@@ -196,7 +226,7 @@ describe('ModalEncounter', function () {
         id: 0
       },
       outcome: {
-        captured: true,
+        captured,
         name,
       }
     }
@@ -207,7 +237,8 @@ describe('ModalEncounter', function () {
           name,
           level,
           species,
-          source
+          source,
+          captured
         }
       }
     })
@@ -240,9 +271,10 @@ describe('ModalEncounter', function () {
 
     const species = 4
     const level = 5
-    const name = 'potatoFace'
+    const name = ''
     const source = 0
     const type = 'event'
+    const captured = 'false'
 
     const expectedData = {
       type: 'encounter',
@@ -253,7 +285,7 @@ describe('ModalEncounter', function () {
         id: 0
       },
       outcome: {
-        captured: true,
+        captured,
         name,
       }
     }
@@ -264,7 +296,8 @@ describe('ModalEncounter', function () {
           name,
           level,
           species,
-          source
+          source,
+          captured
         }
       }
     })

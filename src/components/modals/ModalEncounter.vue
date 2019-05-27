@@ -41,6 +41,18 @@
             </div>
           </div>
           <div class="field">
+            <label class="label">
+              <input 
+                type="checkbox" 
+                v-model="form.fields.captured"
+                ref="form-captured"
+                @change="onFieldChange('captured')"
+                test-label="formFieldCaptured"
+              >
+              &nbsp;Captured
+            </label>
+          </div>
+          <div class="field">
             <label class="label">Name</label>
             <div class="control">
               <input 
@@ -48,6 +60,7 @@
                 type="text" 
                 placeholder="Missingno." 
                 v-model="form.fields.name"
+                :disabled="!form.fields.captured"
                 ref="form-name"
                 @change="onFieldChange('name')"
                 test-label="formFieldName"
@@ -75,7 +88,7 @@
           <div class="notification is-warning" v-if="hasWarning" test-label="warning">
             <p>Please fill out the following fields, they're required!</p>
             <ul>
-              <li v-for="field in warningFields" :key="field" test-label="warningField">- {{field}}</li>
+              <li v-for="field in warningFields" :key="field.name || field" test-label="warningField">- {{field}}</li>
             </ul>
           </div>
           <div class="notification is-danger" v-if="hasError" test-label="error">
@@ -122,6 +135,7 @@ export default {
     encounterSource: String,
     encounterLevel: String,
     encounterSpecies: String,
+    encounterCaptured: Boolean,
     onComplete: Function
   },
   data: function () {
@@ -133,32 +147,36 @@ export default {
           name: "",
           species: this.encounterSpecies || 1,
           level: this.encounterLevel || 5,
-          source: this.encounterSource
+          source: this.encounterSource,
+          captured: this.encounterCaptured
         }
       },
       hasWarning: false,
       warningFields: [],
       hasError: false,
-      errorMessage: null
-    }
-  },
-  methods: {
-    onFieldChange: function (fieldName){
-      if( this.form.fields[fieldName] !== '' && isDefined(this.form.fields[fieldName]) ){
-        this.warningFields = this.warningFields.filter(field => field !== fieldName)
-        if( this.warningFields.length === 0 )
-          this.hasWarning = false
-      }
-    },
-    onSubmit: async function (){
-      const requiredFields = [
-        'name',
+      errorMessage: null,
+      requiredFields: [
+        {
+          name: 'name',
+          validator: value => this.form.fields.captured 
+            ? isDefined(this.form.fields.name) && this.form.fields.name !== ''
+            : true
+        },
         'level',
         'source'
       ]
+    }
+    
+  },
+  methods: {
+    _updateFieldWarnings: async function (){
       let newWarningFields = []
-      for( let field of requiredFields ){
-        if( this.form.fields[field] === '' || !isDefined(this.form.fields[field]) ){
+      for( let field of this.requiredFields ){
+        let fieldIsValid
+        if( field.validator ) fieldIsValid = field.validator();
+        else fieldIsValid = isDefined(this.form.fields[field]) && this.form.fields[field] !== '';
+
+        if( !fieldIsValid ){
           newWarningFields.push(field)
         }
       }
@@ -169,6 +187,14 @@ export default {
       else{
         this.hasWarning = false
         this.warningFields = []
+      }
+    },
+    onFieldChange: function (fieldName){
+      this._updateFieldWarnings()
+    },
+    onSubmit: async function (){
+      this._updateFieldWarnings()
+      if( !this.hasWarnings ){
         try{
           await request(`/runs/${this.run.id}/events`, 'post', {
             type: 'encounter',
@@ -179,7 +205,7 @@ export default {
               id: this.form.fields.source
             },
             outcome: {
-              captured: true,
+              captured: this.form.fields.captured,
               name: this.form.fields.name,
             }
           })
