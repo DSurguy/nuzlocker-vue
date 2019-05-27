@@ -67,7 +67,7 @@ export default {
       }
       switch(this.event.source.type){
         case 'event': classes['fa-exclamation'] = true; break;
-        case 'location': classes['fa-spa'] = true; break;
+        case 'field': classes['fa-spa'] = true; break;
       }
       return classes;
     }
